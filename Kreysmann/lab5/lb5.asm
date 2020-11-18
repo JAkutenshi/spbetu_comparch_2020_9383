@@ -4,10 +4,15 @@ dosseg
 .data
     KEEP_CS DW 0 	 ;для хранения сегмента
     KEEP_IP DW 0 	 ;для хранения смещения вектора прерывания
-    message db 'Control + c$'
+    KEEP_SS DW 0
+    KEEP_SP DW 0
+    message db 'ControlC$'
+    mas dw 100h dup(?)
 .code
+    
     mov ax,@data
     mov ds,ax
+
     mov ah,35h   	 ;функция получения вектора
     mov al,23h   	 ;номер прерывания
     int 21h      	 ;получаем вектор 
@@ -21,9 +26,29 @@ dosseg
     mov al,23h		 ;номер прерывания
     int 21h		 ;меняем прерывание
     pop ds
-       jmp metka 
-   
+    
+       
+
+    while:
+    mov ah,1h
+    int 21h
+    cmp al,1Bh
+    je metka
+    jmp while    
+
     MY_INT proc far
+    
+    cli
+    mov keep_ss,ss
+    mov keep_sp,sp
+    mov ax,seg mas
+    mov ss,ax
+    mov ax,offset mas
+    add ax,100h
+    mov sp,ax
+    sti
+    
+
     push dx
     push ax
     mov dx,offset message	;смещение для сообщения 
@@ -33,10 +58,16 @@ dosseg
     out 20h,al                  ;>более низкого уровня
     pop ax
     pop dx
+    
+    cli    
+    mov ax,keep_ss
+    mov ss,ax
+    mov sp,keep_sp
+    sti
     iret 
     MY_INT endp
+
 metka:
-   ; int 23h
     push ds			
     mov dx,keep_ip		;восстанавливаем смещение для прерывания
     mov ax,keep_cs		;восстанавливаем сегмент прерывания
@@ -46,5 +77,6 @@ metka:
     int 21h			;меняем прерывание
     pop ds			
     mov ah,4ch
+    
     int 21h
 end 

@@ -22,20 +22,27 @@ void print_info()
 char* func(char * str_in){
     char *str_out = new char[N*2+1];
     asm(
-        "mov r8, %0\n"
+        "mov rsi, %0\n"
         "mov rdi, %1\n"
     "f:\n"
-        "mov al, [rdi]\n" //берем текущий символ
-        "inc rdi\n" //сдвигаемся к следующему символу
+        "lodsb [rsi]\n"
+        //"mov al, [rdi]\n" //берем текущий символ//сдвигаемся к следующему символу
         "cmp al, 0\n" //проверяем является ли символ концом строки
         "je f_end\n"
-
         "cmp al, 0x80\n"
         "jb Write\n"
+        "cmp al, 0x84\n"
+        "je Write\n"
+        "cmp al, 0x96\n"
+        "je Write\n"
+        "cmp al, 0xE2\n"
+        "je Write\n"
 
+        
+        //"mov al, [rdi]\n"
+        //"inc rdi\n"
         "mov ah, al\n"
-        "mov al, [rdi]\n"
-        "inc rdi\n"
+        "lodsb [rsi]\n"
         "cmp ax, 0xD18F\n" // > я
         "jg Write2\n"
         "cmp ax, 0xD090\n" // < А
@@ -50,16 +57,18 @@ char* func(char * str_in){
         "jle f1_A_F\n"
         "cmp ax, 0xD18F\n" //я
         "je Write_Ya\n"
-        "mov bl, 0x31\n" //добавляем '1' в массив
-        "mov [r8], bl\n"
-        "inc r8\n"
+        "mov bl, al\n"
+        "mov al, 0x31\n" //добавляем '1' в массив
+        "stosb [rdi]\n"
+        "xchg al, bl\n"
+        //"mov [r8], bl\n"
+        //"inc r8\n"
         "cmp ax, 0xD0BF\n" //п
         "je f_pi\n"
         "cmp ax, 0xD188\n" //от р до ш
         "jle f2_1_9\n"
         "cmp ax, 0xD18E\n" //от щ до ю
         "jle f2_A_F\n"
-
         
 
     "Big_char:"
@@ -69,9 +78,13 @@ char* func(char * str_in){
         "jle f1_A_F\n"
         "cmp ax, 0xD0AF\n" //Я
         "je Write_Ya\n"
-        "mov bl, 0x31\n"
-        "mov [r8], bl\n"
-        "inc r8\n"
+        //"mov bl, 0x31\n"
+        //"mov [r8], bl\n"
+        //"inc r8\n"
+        "mov bl, al\n"
+        "mov al, 0x31\n" //добавляем '1' в массив
+        "stosb [rdi]\n"
+        "xchg al, bl\n"
         "cmp ax, 0xD09F\n" //П
         "je f_pi\n"
         "cmp ax, 0xD0A8\n" //от Р до Ш
@@ -123,16 +136,18 @@ char* func(char * str_in){
         "mov al, 0x32\n" //2
         "mov ah, 0x30\n"//0
     "Write2:\n"
-        "mov [r8], al\n" //записываем младший байт
+        //"mov [r8], al\n" //записываем младший байт
+        "stosb [rdi]\n"
         "xchg al, ah\n" //меняем местам младший и старший байт
-        "inc r8\n"
+        //"inc r8\n"
     "Write:\n"
-        "mov [r8], al\n" 
-        "inc r8\n"
+        "stosb [rdi]\n"
+        //"mov [r8], al\n" 
+        //"inc r8\n"
         "jmp f\n"
     "f_end:\n"
-        :"=m"(str_out)
-        :"m"(str_in)
+        ::"m"(str_in), "m"(str_out)
+        //:"m"(str_in)
     );
     return str_out;
 }

@@ -1,0 +1,150 @@
+Microsoft (R) Macro Assembler Version 5.10                  11/25/20 17:38:5
+                                                             Page     1-1
+
+
+ 0000				AStack  SEGMENT STACK
+ 0000  0400[			    DB 1024 DUP(?)
+	   ??			
+			 ]	
+				
+ 0400				AStack  ENDS
+				
+ 0000				DATA    SEGMENT
+ 0000  0000			    KEEP_CS DW 0    ;для хранения с
+				егмента
+ 0002  0000			    KEEP_IP DW 0    ;и смещения век
+				тора прерывания
+ 0004				DATA    ENDS
+				
+				
+ 0000				CODE    SEGMENT
+				    ASSUME CS:CODE, DS:DATA, SS:AStack
+				
+				
+ 0000				MY_INT PROC FAR
+ 0000  50			    push ax 
+ 0001  52			    push dx 
+				 ;------ Часть кода выводящая
+				 звук
+ 0002  B0 B6			    MOV AL , 10110110b
+ 0004  E6 43			    OUT 43H, AL; Set mode for 2nd channel
+ 0006  B8 03E8			    MOV AX , 1000; Pitch of sound
+ 0009  E6 42			    OUT 42H, AL
+ 000B  8A C4			    MOV AL , AH
+ 000D  E6 42			    OUT 42H, AL; Set it to speaker port
+ 000F  E4 61			    IN AL, 61H
+ 0011  8A E0			    MOV AH, AL
+ 0013  0C 03			    OR AL,3
+ 0015  E6 61			    OUT 61H, AL
+ 0017  2B C9			    SUB CX, CX
+ 0019				    KILL_TIME:
+ 0019  E2 FE			        LOOP KILL_TIME
+ 001B  8A C4			        MOV AL, AH
+ 001D  E6 61			        OUT 61H, AL
+				 ;---------------------------------------------
+ 001F  5A			    pop dx 
+ 0020  58			    pop ax 
+				
+ 0021  B0 20			    mov al,20h
+ 0023  E6 20			    out 20h,al
+ 0025  CF			    iret
+ 0026				MY_INT ENDP
+				
+				
+ 0026				MAIN PROC FAR
+ 0026  B8 ---- R		    MOV AX, DATA
+ 0029  8E D8			    MOV DS, AX
+				    ;сохраняем вектор преры
+				вания
+Microsoft (R) Macro Assembler Version 5.10                  11/25/20 17:38:5
+                                                             Page     1-2
+
+
+ 002B  B4 35			    MOV AH, 35H ; функция получен
+				ия вектора
+ 002D  B0 23				MOV AL, 23H ; номер вектора
+ 002F  CD 21				INT 21H
+ 0031  89 1E 0002 R			MOV KEEP_IP, BX ; запоминани�
+				� смещения
+ 0035  8C 06 0000 R			MOV KEEP_CS, ES ; и сегмента �
+				�ектора прерывания
+				
+ 0039  1E			    PUSH DS
+ 003A  BA 0000 R		    MOV DX, OFFSET MY_INT ; смещение д
+				ля процедуры в DX
+ 003D  B8 ---- R		    MOV AX, SEG MY_INT ; сегмент про�
+				�едуры
+ 0040  8E D8			    MOV DS, AX; помещаем в DS
+ 0042  B4 25			    MOV AH, 25H; функция установ�
+				�и вектора
+ 0044  B0 23			    MOV AL, 23H; номер вектора
+ 0046  CD 21			    INT 21H; меняем прерывание
+ 0048  1F			    POP DS
+				
+ 0049				enter_ctrl_c:
+ 0049  B4 00			    mov ah,0
+ 004B  CD 16			    int 16h
+ 004D  3C 03			    cmp al,3
+ 004F  75 F8			    jne enter_ctrl_c
+				
+ 0051  CD 23			    INT 23H
+				
+ 0053  FA			    CLI
+ 0054  1E			    PUSH DS
+ 0055  8B 16 0002 R		    MOV DX, KEEP_IP
+ 0059  A1 0000 R		    MOV AX, KEEP_CS
+ 005C  8E D8			    MOV DS, AX
+ 005E  B4 25			    MOV AH, 25H
+ 0060  B0 23			    MOV AL, 23H
+ 0062  CD 21			    INT 21H
+				    ; восстанавливаем стары
+				й вектор прерывания
+ 0064  1F			    POP DS
+ 0065  FB			    STI
+				
+ 0066  B4 4C			    MOV AH, 4CH
+ 0068  CD 21			    INT 21H
+				
+ 006A				MAIN ENDP
+				
+ 006A				CODE ENDS
+				
+				END MAIN
+Microsoft (R) Macro Assembler Version 5.10                  11/25/20 17:38:5
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0400	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	006A	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0004	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ENTER_CTRL_C . . . . . . . . . .  	L NEAR	0049	CODE
+
+KEEP_CS  . . . . . . . . . . . .  	L WORD	0000	DATA
+KEEP_IP  . . . . . . . . . . . .  	L WORD	0002	DATA
+KILL_TIME  . . . . . . . . . . .  	L NEAR	0019	CODE
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0026	CODE	Length = 0044
+MY_INT . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 0026
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  LAB5		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     90 Source  Lines
+     90 Total   Lines
+     14 Symbols
+
+  48004 + 459256 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

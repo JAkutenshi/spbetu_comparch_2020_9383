@@ -15,9 +15,21 @@ SUBR_INT PROC FAR ;начало процедуры
 	push ax ;сохранение изменяемого регистра
 	push dx ;сохранение изменяемого регистра
 
-	mov ah, 2 ;вывод на "дисплей"
-	mov dl, 07h ;beep
-	int 21h
+	mov al, 10110110b
+	out 43h, al
+	mov ax, 880 ; sound pitch
+	out 42h, al
+	mov al, ah
+	out 42h, al
+	in al, 61h
+	mov ah, al
+	or al, 3
+	out 61h, al
+	sub cx, cx
+kill_time:
+	loop kill_time
+	mov al, ah
+	out 61h, al ; turn off
 
 	pop dx ;восстановление регистра
 	pop ax ;восстановление регистра

@@ -18,16 +18,11 @@ char* MakeString(char* input_str) {
 
             "inc rsi\n"
 
+            "cmp al, 0x20\n"
+            "je write_char\n"
+
             "cmp al, 0x80\n"
             "jb digit\n"    // если код символа имеет ненулевой восьмой бит
-            "jge cyr_char\n"
-
-        "digit:\n"
-            "cmp al, 0x30\n"
-            "jb char_loop\n"
-            "cmp al, 0x39\n"
-            "jbe write_digit\n"
-            "jmp char_loop\n"
 
         "cyr_char:\n"
             "mov ah, al\n"
@@ -40,6 +35,14 @@ char* MakeString(char* input_str) {
             "xchg ah, al\n"
 
             // иначе просто записываем символ в выход
+            "jmp write_cyr\n"
+
+        "digit:\n"
+            "cmp al, 0x30\n"
+            "jb char_loop\n"
+            "cmp al, 0x39\n"
+            "jbe write_char\n"
+            "jmp char_loop\n"
 
         "write_cyr:\n"
             "mov [rdi], ax\n"
@@ -47,7 +50,7 @@ char* MakeString(char* input_str) {
             "inc rdi\n"
             "jmp char_loop\n"
 
-        "write_digit:\n"
+        "write_char:\n"
             "mov [rdi], al\n"
             "inc rdi\n"
             "jmp char_loop\n"
@@ -66,7 +69,7 @@ int main() {
                  "и русских букв входной строки" << std::endl;
 
     char input_str[MAXSIZE + 1] = {0};
-    std::cin >> input_str;
+    std::cin.getline(input_str, MAXSIZE);
     input_str[MAXSIZE] = 0;
 
     char* answer = MakeString(input_str);

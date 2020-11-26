@@ -14,6 +14,22 @@ CODE    SEGMENT
     ASSUME CS:CODE, DS:DATA, SS:AStack
 
 MY_INT PROC FAR
+
+    KEEP_SS DW 0
+    KEEP_SP DW 0
+    KEEP_AX DW 0
+    MY_STACK DW 1024 DUP(?)
+
+    procedure:
+
+    mov KEEP_SP, sp
+    mov KEEP_AX, ax
+    mov KEEP_SS, ss
+
+    mov sp, OFFSET procedure
+    mov bx, SEG MY_STACK
+    mov ss, bx
+    
     push ax ;сохранение изменяемых регистров
 	push dx 
 
@@ -23,6 +39,11 @@ MY_INT PROC FAR
 
 	pop dx ;восстановление регистров
 	pop ax 
+
+    mov sp, KEEP_SP
+    mov bx, KEEP_SS
+    mov ss, bx
+    mov ax, KEEP_AX
 
 	mov al,20h  ;разрешение обработки прерываний 
 	out 20h,al  ;с более низкими уровнями

@@ -11,6 +11,22 @@ CODE    SEGMENT
     ASSUME SS:AStack, DS:DATA, CS:CODE
 
 SUBR_INT PROC FAR ;начало процедуры
+	jmp start
+	int_keep_ss DW 0
+	int_keep_sp DW 0
+	int_keep_ax DW 0
+	IntStack DW 16 DUP(?)
+start:
+	mov int_keep_sp, sp
+	mov int_keep_ax, ax
+	mov ax, ss
+	mov int_keep_ss, ax
+
+	mov ax, int_keep_ax
+
+	mov sp, OFFSET start
+   	mov ax, seg IntStack
+	mov ss, ax
 
 	push ax ;сохранение изменяемого регистра
 	push dx ;сохранение изменяемого регистра
@@ -33,6 +49,12 @@ kill_time:
 
 	pop dx ;восстановление регистра
 	pop ax ;восстановление регистра
+
+	mov int_keep_ax, ax
+    mov sp, int_keep_sp
+    mov ax, int_keep_ss
+    mov ss, ax
+    mov ax, int_keep_ax
 
 	mov al, 20h	;разрешаем обработку прерываний
 	out 20h, al	;с более низкими уровнями

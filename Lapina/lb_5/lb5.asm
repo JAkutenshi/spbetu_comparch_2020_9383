@@ -17,12 +17,6 @@ subr_int proc far               ;начало процедуры
 
 	int 21h                 ;вывод строки на экран 
 
-       mov cx, 0Fh
-       mov dx, 4240h 
-       mov ah, 86h
-       int 15h;
-
-
 	pop dx                  ;восстанавливаем регистры
 	pop ax                  ;восстанавливаем регистры
 	mov al,20h
@@ -54,6 +48,11 @@ main proc far
 	pop ds                 ;восстанавливаем ds 
 
 	int 1Ch                ;вызов нового прерывания 1Ch
+
+       mov cx, 0Fh
+       mov dx, 4240h 
+       mov ah, 86h
+       int 15h;
 
 	CLI
 	PUSH DS

@@ -16,30 +16,40 @@ char* MakeString(char* input_str) {
             "cmp al, 0\n"       // если конец строки
             "je exit\n"         // то закругляемся
 
-            "inc rsi\n"         // передвигаем указатель на текущий символ
+            "inc rsi\n"
 
-        "handle_char:\n"        // здесь проверяем, является ли символ подходящим
-            "cmp al, 48\n"    
-            "jb char_loop\n"    // если символ имеет код меньше 30 (за символом 0)
+            "cmp al, 0x80\n"
+            "jb digit\n"    // если код символа имеет ненулевой восьмой бит
+            "jge cyr_char\n"
 
         "digit:\n"
-            "cmp al, 57\n"
-            "jbe write_char\n"  // если цифра, то просто записываем ее
-
-            // иначе символ может быть символом
+            "cmp al, 0x30\n"
+            "jb char_loop\n"
+            "cmp al, 0x39\n"
+            "jbe write_digit\n"
+            "jmp char_loop\n"
 
         "cyr_char:\n"
-            "cmp al, 128\n"
-            "jb char_loop\n"    // если код символа находится за буквой А
-            "cmp al, 239\n"
-            "jg char_loop\n"    // если код символа находится после буквы я
-            
-            // иначе символ является буквой кириллицы => просто записываем ее в выход
+            "mov ah, al\n"
+            "mov al, [rsi]\n"
+            "inc rsi\n"
+            "cmp ax, 0xd090\n"
+            "jb char_loop\n"
+            "cmp ax, 0xd18f\n"
+            "jg char_loop\n"
+            "xchg ah, al\n"
 
-        "write_char:\n"
+            // иначе просто записываем символ в выход
+
+        "write_cyr:\n"
+            "mov [rdi], ax\n"
+            "inc rdi\n"
+            "inc rdi\n"
+            "jmp char_loop\n"
+
+        "write_digit:\n"
             "mov [rdi], al\n"
             "inc rdi\n"
-
             "jmp char_loop\n"
 
         "exit:\n"

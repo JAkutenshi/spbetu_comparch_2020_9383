@@ -18,15 +18,15 @@ MY_INT PROC FAR
 	KEEP_AX DW 0
     INTSTACK DW 16 DUP(?)
 	
-begin:
+BEGIN:
 
 	MOV KEEP_SP, SP
     MOV KEEP_AX, AX
     MOV AX, SS
     MOV KEEP_SS, AX
     MOV AX, KEEP_AX
-    MOV SP, OFFSET begin
-    MOV AX, seg INTSTACK
+    MOV SP, OFFSET BEGIN
+    MOV AX, SEG INTSTACK
     MOV SS, AX
 		
     PUSH AX ;сохранение изменяемых регистров
@@ -72,7 +72,24 @@ MAIN PROC FAR
 	POP DS
 	
     INT 08H
+	
+MY_LOOP:
+    MOV AH, 01H
+    INT 21H
 
+    CMP AL, 13
+    JE NEW_INT
+
+    CMP AL, 27
+    JNE MY_LOOP
+
+    JMP MY_END
+	
+NEW_INT:
+    INT 08H
+    JMP MY_LOOP
+	
+MY_END:
     ;восстанавливаем старый вектор прерывания
     CLI
 	PUSH DS

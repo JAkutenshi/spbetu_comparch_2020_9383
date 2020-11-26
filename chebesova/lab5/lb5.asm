@@ -75,14 +75,12 @@ MAIN PROC FAR
 	INT 21H ; меняем прерывание
 	POP DS
 	
-    INT 08H
-	
 MY_LOOP:
     MOV AH, 01H
     INT 21H
     CMP AL, 13
-    JNE MY_END
-	LOOP MY_LOOP
+    JE MY_END
+	JMP MY_LOOP
 	
 MY_END:
     ;восстанавливаем старый вектор прерывания

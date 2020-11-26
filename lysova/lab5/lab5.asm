@@ -14,29 +14,35 @@ CODE    SEGMENT
 
 MY_INT PROC FAR
 
-    jmp procedure
+    message DB 'I am interrupt $'
 
     KEEP_SS DW 0
     KEEP_SP DW 0
     KEEP_AX DW 0
     MY_STACK DW 1024 DUP(?)
-    message DB 'I am interrupt $'
+    
 
     procedure:
-
-    mov bx, SEG MY_INT
-    mov ds, bx
 
     mov KEEP_SP, sp
     mov KEEP_AX, ax
     mov KEEP_SS, ss
 
     mov sp, OFFSET procedure
-    mov bx, SEG MY_STACK
-    mov ss, bx
+    mov ax, SEG MY_STACK
+    mov ss, ax
+
+    mov ax, KEEP_AX
     
     push ax ;сохранение изменяемых регистров
 	push dx 
+    push ds
+
+    mov ax, SEG MY_INT
+
+    mov ds, ax
+
+    mov ax, KEEP_AX
 
 	mov ah,9h ;заносим функцию вывода строки 
 	mov dx, offset message ;заносим адрес самой строки
@@ -44,10 +50,11 @@ MY_INT PROC FAR
 
 	pop dx ;восстановление регистров
 	pop ax 
+    pop ds
 
     mov sp, KEEP_SP
-    mov bx, KEEP_SS
-    mov ss, bx
+    mov ax, KEEP_SS
+    mov ss, ax
     mov ax, KEEP_AX
 
 	mov al,20h  ;разрешение обработки прерываний 

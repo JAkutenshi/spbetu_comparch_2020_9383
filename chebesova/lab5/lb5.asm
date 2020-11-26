@@ -10,8 +10,25 @@ DATA    ENDS
 
 CODE    SEGMENT
     ASSUME CS:CODE, DS:DATA, SS:AStack
-
+	
 MY_INT PROC FAR
+    jmp begin
+    KEEP_SS DW 0
+	KEEP_SP DW 0
+	KEEP_AX DW 0
+    INTSTACK DW 16 DUP(?)
+	
+begin:
+
+	MOV KEEP_SP, SP
+    MOV KEEP_AX, AX
+    MOV AX, SS
+    MOV KEEP_SS, AX
+    MOV AX, KEEP_AX
+    MOV SP, OFFSET begin
+    MOV AX, seg INTSTACK
+    MOV SS, AX
+		
     PUSH AX ;сохранение изменяемых регистров
 	PUSH DX 
 
@@ -21,6 +38,13 @@ MY_INT PROC FAR
 
 	POP DX ;восстановление регистров
 	POP AX 
+	
+	MOV  KEEP_AX, AX
+    MOV SP, KEEP_SP
+    MOV AX, KEEP_SS
+    MOV SS, AX
+    MOV AX, KEEP_AX
+	
 	MOV AL,20H
 	OUT 20H,AL
 	IRET ;выход из прерывания

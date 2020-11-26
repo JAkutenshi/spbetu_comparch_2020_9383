@@ -5,21 +5,20 @@ AStack  ENDS
 DATA    SEGMENT
     KEEP_CS DW 0    ;для хранения сегмента
     KEEP_IP DW 0    ;и смещения вектора прерывания
-    TEXT DB 'Hello world!$'
 DATA    ENDS
 
 CODE    SEGMENT
     ASSUME CS:CODE, DS:DATA, SS:AStack
 	
 MY_INT PROC FAR
-    jmp begin
+	TEXT DB 'Hello world!$'
+    JMP BEGIN
     KEEP_SS DW 0
 	KEEP_SP DW 0
 	KEEP_AX DW 0
     INTSTACK DW 16 DUP(?)
 	
 BEGIN:
-
 	MOV KEEP_SP, SP
     MOV KEEP_AX, AX
     MOV AX, SS
@@ -31,11 +30,16 @@ BEGIN:
 		
     PUSH AX ;сохранение изменяемых регистров
 	PUSH DX 
+	
+	PUSH DS
+    MOV AX, SEG MY_INT
+    MOV DS, AX
 
 	MOV AH,9H  ;выводим текст 
 	MOV DX, OFFSET TEXT
     INT 21H
 
+	POP DS
 	POP DX ;восстановление регистров
 	POP AX 
 	
@@ -76,18 +80,9 @@ MAIN PROC FAR
 MY_LOOP:
     MOV AH, 01H
     INT 21H
-
     CMP AL, 13
-    JE NEW_INT
-
-    CMP AL, 27
-    JNE MY_LOOP
-
-    JMP MY_END
-	
-NEW_INT:
-    INT 08H
-    JMP MY_LOOP
+    JNE MY_END
+	LOOP MY_LOOP
 	
 MY_END:
     ;восстанавливаем старый вектор прерывания

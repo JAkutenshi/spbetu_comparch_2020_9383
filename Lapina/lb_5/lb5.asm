@@ -15,8 +15,13 @@ subr_int proc far               ;начало процедуры
 	mov ah,9h               ;функция установки вектора
 	mov dx,offset str       ;в dx загружаем адрес сообщения str
 
-	int 21h                 ;вывод строки на экран
-        int 1Ch                 ;с частотой 18 раз в секунду
+	int 21h                 ;вывод строки на экран 
+
+       mov cx, 0Fh
+       mov dx, 4240h 
+       mov ah, 86h
+       int 15h;
+
 
 	pop dx                  ;восстанавливаем регистры
 	pop ax                  ;восстанавливаем регистры
@@ -40,7 +45,7 @@ main proc far
 	MOV  KEEP_CS, ES       ; и сегмента вектора прерывания
 
 	push ds
-	mov dx,offset subr_int
+	mov dx,offset subr_int ;смещение для процедуры в DX
 	mov ax,seg subr_int    ;сегмент процедуры
 	mov ds,ax              ;помещаем в ds
 	mov ah,25h             ;функция установки вектора

@@ -85,9 +85,14 @@ MAIN PROC FAR
 	int 21h
 	pop ds
 
-	int 1ch
+int_sound:
+	mov ah, 01h
+	int 21h
+	cmp al, 1bh ;ascii - esc
+	je fin
+	jmp int_sound
 
-
+fin:
 	;восстанавливаем старый вектор прерывания
 	cli
 	push ds

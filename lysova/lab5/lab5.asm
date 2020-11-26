@@ -7,7 +7,6 @@ AStack  ENDS
 DATA    SEGMENT
     KEEP_CS DW 0    ;для хранения сегмента вектора прерывания
     KEEP_IP DW 0    ;для хранения смещения вектора прерывания
-    message DB 'I am interrupt $'
 DATA    ENDS
 
 CODE    SEGMENT
@@ -21,8 +20,12 @@ MY_INT PROC FAR
     KEEP_SP DW 0
     KEEP_AX DW 0
     MY_STACK DW 1024 DUP(?)
+    message DB 'I am interrupt $'
 
     procedure:
+
+    mov bx, SEG MY_INT
+    mov ds, bx
 
     mov KEEP_SP, sp
     mov KEEP_AX, ax

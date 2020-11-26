@@ -15,6 +15,8 @@ CODE    SEGMENT
 
 MY_INT PROC FAR
 
+    jmp procedure
+
     KEEP_SS DW 0
     KEEP_SP DW 0
     KEEP_AX DW 0
@@ -72,8 +74,12 @@ MAIN PROC FAR
     int 21h
     pop ds
 
-
-    int 08h
+    BUTTON_LOOP:
+    mov ah, 00h
+    int 16h
+    cmp al, 27
+    je RESTOREVECTOR
+    loop BUTTON_LOOP
 
     RESTOREVECTOR:  ;восстанавливаем старый вектор прерывания
     cli
@@ -95,4 +101,3 @@ MAIN ENDP
 CODE ENDS
 
 END MAIN
-

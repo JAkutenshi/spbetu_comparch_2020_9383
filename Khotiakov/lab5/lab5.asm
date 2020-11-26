@@ -5,6 +5,10 @@ AStack  ENDS
 DATA    SEGMENT
     KEEP_CS DW 0    ;для хранения сегмента
     KEEP_IP DW 0    ;и смещения вектора прерывания
+    KEEP_SS DW 0
+    KEEP_SP DW 0
+    KEEP_AX DW 0
+    MAS DW 12 DUP(?)
 DATA    ENDS
 
 
@@ -13,8 +17,18 @@ CODE    SEGMENT
 
 
 MY_INT PROC FAR
-    push ax 
-    push dx 
+    MOV KEEP_SP, SP
+    MOV KEEP_AX, AX
+    MOV AX, SS
+    MOV KEEP_SS, AX
+    MOV AX, KEEP_AX
+    MOV SP, OFFSET MY_INT
+    MOV AX, seg MAS
+    MOV SS, AX
+
+
+    push AX
+    push DX 
  ;------ Часть кода выводящая звук
     MOV AL , 10110110b
     OUT 43H, AL; Set mode for 2nd channel
@@ -32,8 +46,15 @@ MY_INT PROC FAR
         MOV AL, AH
         OUT 61H, AL
  ;---------------------------------------------
-    pop dx 
-    pop ax 
+    pop DX 
+    pop AX 
+
+    MOV  KEEP_AX, AX
+    MOV SP, KEEP_SP
+    MOV AX, KEEP_SS
+    MOV SS, AX
+    MOV AX, KEEP_AX
+
 
     mov al,20h
     out 20h,al

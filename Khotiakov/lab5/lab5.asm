@@ -5,10 +5,6 @@ AStack  ENDS
 DATA    SEGMENT
     KEEP_CS DW 0    ;для хранения сегмента
     KEEP_IP DW 0    ;и смещения вектора прерывания
-    KEEP_SS DW 0
-    KEEP_SP DW 0
-    KEEP_AX DW 0
-    MAS DW 12 DUP(?)
 DATA    ENDS
 
 
@@ -17,12 +13,18 @@ CODE    SEGMENT
 
 
 MY_INT PROC FAR
+    jmp start
+    KEEP_SS DW 0
+    KEEP_SP DW 0
+    KEEP_AX DW 0
+    MAS DW 12 DUP(?)
+start:
     MOV KEEP_SP, SP
     MOV KEEP_AX, AX
     MOV AX, SS
     MOV KEEP_SS, AX
     MOV AX, KEEP_AX
-    MOV SP, OFFSET MY_INT
+    MOV SP, OFFSET start
     MOV AX, seg MAS
     MOV SS, AX
 

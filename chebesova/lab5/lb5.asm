@@ -11,8 +11,8 @@ CODE    SEGMENT
     ASSUME CS:CODE, DS:DATA, SS:AStack
 	
 MY_INT PROC FAR
-	TEXT DB 'Hello world!$'
     JMP BEGIN
+	TEXT DB 'Hello world!$'
     KEEP_SS DW 0
 	KEEP_SP DW 0
 	KEEP_AX DW 0

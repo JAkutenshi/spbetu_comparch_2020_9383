@@ -1,13 +1,13 @@
 AStack SEGMENT STACK
-    DW 256 DUP(?)   ; 1 килобайт
+    dw 256 DUP(?)   ; 1 килобайт
 AStack ENDS
 
 
 DATA SEGMENT
 
-INT_IP DW 0     ; IP прерывания
-INT_CS DW 0     ; CS прерывания
-GREETINGS db "Hello, World!$"
+INT_IP dw 0     ; IP прерывания
+INT_CS dw 0     ; CS прерывания
+GREETINGS db "This interrupt is working!", 10, 13, '$'
 
 DATA ENDS
 
@@ -17,6 +17,23 @@ CODE SEGMENT
 
 
 my_interrupt PROC FAR
+    jmp int_start
+
+    SAVED_SP dw 0
+    SAVED_SS dw 0
+    SAVED_AX dw 0
+    INT_STACK dw 16 DUP(?)
+
+int_start:
+    mov SAVED_SP, sp
+    mov SAVED_AX, ax
+    mov ax, ss
+    mov SAVED_SS, ax
+    mov ax, SAVED_AX
+    mov sp, offset int_start
+    mov ax, seg INT_STACK
+    mov ss, ax
+
 
     push ax
     push dx
@@ -27,6 +44,14 @@ my_interrupt PROC FAR
 
     pop dx
     pop ax
+
+
+    mov SAVED_AX, ax
+    mov sp, SAVED_SP
+    mov ax, SAVED_SS
+    mov ss, ax
+    mov ax, SAVED_AX
+
 
     mov al, 20h
     out 20h, al
@@ -53,7 +78,11 @@ Main PROC FAR
     int 21h                     ; запускаем изменение  прерывания
     pop ds
 
-    int 1ch ; вызываем созданное прерывание
+    input:
+        mov ah, 1
+        int 21h
+        cmp al, 71h
+        jne input
 
     cli
     push ds

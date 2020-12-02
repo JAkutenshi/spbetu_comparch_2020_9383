@@ -26,21 +26,18 @@ funcMasm proc C
 			mov bx,[ebx+esi] ;в bx - текущий элемент из LGrInt
 			cmp tempI,bx	 ;сравневаем очередную левую границу с очередным случайным числом
 			jge metka3		 ;если число больше границы, то оно входит в интервал
-			continue:
-				add esi,2	 ;прибавляем к индексу массива LGrInt 2
-			pop ebx			
+			add esi,2	 ;прибавляем к индексу массива LGrInt 2
+			pop ebx		
 		loop metka2			 ;продвигаемся дальше по внутреннему циклу
-		pop ecx
-		add edx,2			 ;прибавляем к индекусу массива randArray 2
-	loop metka1				 ;продвигаемся дальше по внешнему циклу 
-	jmp end0				 ;если прошли внешнй цикл, то переходим в конец программы
 		metka3:				 
 			mov bx, [eax+esi] ;получаем элемент из result
 			inc bx			  ;увеличиваем его на 1 
 			mov [eax+esi],bx  ;зааносим обратно в result
-			jmp continue	  
+			pop ebx	 
+			pop ecx			  ;в ecx счетчик для внешнего цикла
+			add edx,2			 ;прибавляем к индекусу массива randArray 2
+	loop metka1 
 	
-	end0:
 	ret
 funcMasm endp
 end

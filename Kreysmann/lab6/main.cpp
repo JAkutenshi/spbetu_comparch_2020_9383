@@ -43,6 +43,19 @@ int main()
 		std::cout << '\n';
 	}
 
+	for (int i = 0; i < NInt; i++)
+	{
+		for (int j = 0; j < NInt - i - 1; j++)
+		{
+			if (LGrInt[j] < LGrInt[j + 1])
+			{
+				int temp = LGrInt[j];
+				LGrInt[j] = LGrInt[j + 1];
+				LGrInt[j + 1] = temp;
+			}
+		}
+	}
+
 	randArray = new short[NumRanDat];
 	
 	//генерация псевдослучайных чисел

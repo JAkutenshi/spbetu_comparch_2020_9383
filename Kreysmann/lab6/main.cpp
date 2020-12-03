@@ -57,11 +57,11 @@ int main()
 	}
 
 	randArray = new short[NumRanDat];
-	
+
 	//генерация псевдослучайных чисел
 	for (int i = 0; i < NumRanDat; i++)
 	{
-		randArray[i] = Xmin + rand()%(Xmax - Xmin);
+		randArray[i] = Xmin + rand()%(Xmax - Xmin+1);
 	}
 
 	result = new short[NInt];
@@ -71,13 +71,13 @@ int main()
 	}
 
 	funcMasm(result, LGrInt, randArray, NInt, NumRanDat);
-		
+
 	for (int i = 0; i < NInt; i++)
 	{
 		file << i+1 << ":" << " Левая граница " << LGrInt[i] << "; Количество чисел, попавших в интервал: " << result[i] << '\n';
 	}
-		
-	/*for (int i = 0; i < NumRanDat; i++)
+
+	for (int i = 0; i < NumRanDat; i++)
 	{
 		std::cout << randArray[i] << ' ';
 	}
@@ -86,7 +86,7 @@ int main()
 	{
 		std::cout << result[i] << ' ';
 	}
-	std::cout << '\n';*/
+	std::cout << '\n';
 
 	delete[] randArray;
 	delete[] LGrInt;

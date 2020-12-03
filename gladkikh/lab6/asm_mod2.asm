@@ -16,7 +16,8 @@ mov ecx, intervals_size
 
 align_intervals:
 	mov eax, [esi]
-	add eax, input_xmax
+	sub eax, input_xmin
+	inc eax
 	mov [esi], eax
 	add esi, 4
 	loop align_intervals
@@ -36,12 +37,14 @@ for_loop:
 	
 	mov esi, res_final
 
-    for_input: 
+    for_input:
+		cmp ecx, 0
+		je end_for
         mov eax, [edi]
         add [esi + 4 * ebx], eax
         add edi, 4
         loop for_input
-
+end_for:
     pop esi
     inc ebx
 

@@ -17,6 +17,7 @@ int main() {
 	int xmin, xmax;
 	int* numbers;
 	int* bordersArr;
+	int* bordersArrCpy;
 	int numberOfIntervals;
 	int* asm_mod1_res;
 	int* asm_mod2_res;
@@ -30,6 +31,7 @@ int main() {
 
 	numbers = new int[amountNumbers];
 	bordersArr = new int[numberOfIntervals];
+	bordersArrCpy = new int[numberOfIntervals];
 
 	int len_asm_mod1_res = abs(xmax - xmin) + 1;
 	asm_mod1_res = new int[len_asm_mod1_res];
@@ -45,11 +47,13 @@ int main() {
 	cout << "Введите все левые границы: ";
 	for (int i = 0; i < numberOfIntervals; i++) {
 		cin >> bordersArr[i];
+		bordersArrCpy[i] = bordersArr[i];
 	}
 
 
+
 	for (int i = 0; i < amountNumbers; i++) {
-		numbers[i] = xmin + rand() % (xmax - xmin);
+		numbers[i] = xmin + rand() % (xmax - xmin + 1);
 	}
 	cout << '\n';
 
@@ -85,11 +89,11 @@ int main() {
 	result << "Результат:\n";
 	cout << "№\tЛев.Гр.\tКол-во чисел" << endl;
 	result << "№\tЛев.Гр.\tКол-во чисел" << endl;
-	cout << "1" << "\t" << xmin << '\t' << asm_mod2_res[0] << endl;
-	result << "1" << "\t" << xmin << '\t' << asm_mod2_res[0] << endl;
+	//cout << "1" << "\t" << xmin << '\t' << asm_mod2_res[0] << endl;
+	//result << "1" << "\t" << xmin << '\t' << asm_mod2_res[0] << endl;
 	for (int i = 0; i < numberOfIntervals; i++) {
-		cout << i + 2 << "\t" << bordersArr[i] - xmax << '\t' << asm_mod2_res[i + 1] << endl;
-		result << i + 2 << "\t" << bordersArr[i] - xmax << '\t' << asm_mod2_res[i + 1] << endl;
+		cout << i + 1 << "\t" << bordersArrCpy[i] << '\t' << asm_mod2_res[i] << endl;
+		result << i + 1 << "\t" << bordersArrCpy[i] << '\t' << asm_mod2_res[i] << endl;
 		
 	}
 

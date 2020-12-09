@@ -5,7 +5,7 @@ AStack ENDS
 DATA SEGMENT
 	KEEP_CS DW 0 ; для хранения сегмента
 	KEEP_IP DW 0 ; и смещения вектора прерывания
-	message DB 'Hello, world!', 0AH, 0DH, '$'
+	message DB 'Hello, world!', 13, 10, '$'
 DATA ENDS
 
 CODE SEGMENT
@@ -20,13 +20,13 @@ CODE SEGMENT
 	INT 21h
 	
 	POP AX            ; восстанавливаем регистры
-    POP DX
+    	POP DX
 
-    MOV AL, 20h ; разрешение обработки прерываний
-    OUT 20h, AL ; более низкого уровня
+    	MOV AL, 20h ; разрешение обработки прерываний
+    	OUT 20h, AL ; более низкого уровня
 
 
-    IRET        ; конец прерывания
+    	IRET        ; конец прерывания
 	SUBR_INT ENDP
 	
 	MAIN PROC FAR

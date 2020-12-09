@@ -2,17 +2,17 @@
 #include <iostream>
 
 double cosh(double x) {
-    
+
     double res;
     int deg = -13;
 
     _asm {
         fld x; //st(0) = x
         fabs; //st(0) = |x|
-        
+
         fild deg; //st(0) = deg st(1) = |x|
         fld1; //st(0) = 1 st(1) = deg st(2) = |x|
-        fscale; // st(0) = st(0) * 2 ** (st(1)) st(1) = |x|
+        fscale; // st(0) = st(0) * 2 ** deg st(1) = |x|
 
         fcomip st, st(1); // st(0) = |x|
         fstp st(0); // st is empty
@@ -78,14 +78,14 @@ int main()
 {
     setlocale(LC_ALL, "Rus");
     double x = 0.0;
-    
-    std::cout.precision(17);
-    std::cout << "Введите  число : ";
-    std::cin >> x;
-    std::cout << "Ответ : " << cosh(x) << "\n";
 
-    //std::cout << "Тест для очень маленького числа : x = 2 ** (-13) - 2 ** (-17)\n";
+    std::cout.precision(17);
+    std::cout << "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ  пїЅпїЅпїЅпїЅпїЅ : ";
+    std::cin >> x;
+    std::cout << "пїЅпїЅпїЅпїЅпїЅ : " << cosh(x) << "\n";
+
+    //std::cout << "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ : x = 2 ** (-13) - 2 ** (-17)\n";
     //x = pow(2, -13) - pow(2, -17);
     //std::cout << x << '\n';
-    //std::cout << "Ответ : " << cosh(x) << "\n";
+    //std::cout << "пїЅпїЅпїЅпїЅпїЅ : " << cosh(x) << "\n";
 }

@@ -81,4 +81,8 @@ int main() {
         output << i + 1 << "    |  " << count1 << ", " << count2 << "  |  " << range_arr[i] << endl;
         cout << i + 1 << "    |  " << count1 << ", " << count2 << "  |  " << range_arr[i] << endl;
     }
+    delete[] lower_ranges_arr;
+    delete[] arr;
+    delete[] range_arr;
+    return 0;
 }

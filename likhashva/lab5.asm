@@ -16,17 +16,25 @@ CODE SEGMENT
 
 
 interrupt proc far  ;начало процедуры
-	push ax  ;сохраняем изменяемые регистры
-	push dx  ;сохраняем изменяемые регистры
+	old_ax DW 0;
+	old_dx DW 0;
+	mov old_ax, ax
+	mov old_dx, dx
+	;push ax  ;сохраняем изменяемые регистры
+	;push dx  ;сохраняем изменяемые регистры
 
 	mov dx, offset message  ;в dx помещаем адрес message
 	mov ah, 9h  ;функция установки вектора
 	int 21h  ;вывод message
 
-	pop dx ;восстанавливаем регистры
-	pop ax ;восстанавливаем регистры
+	;pop dx ;восстанавливаем регистры
+	;pop ax ;восстанавливаем регистры
+
 	mov al, 20h
 	out 20h, al
+
+	mov ax,  old_ax
+	mov dx, old_dx
 
 	iret  ;конец прерывания
 interrupt endp  ;конец процедуры

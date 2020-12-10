@@ -12,21 +12,22 @@ CODE SEGMENT
 	ASSUME CS:CODE, DS:DATA, SS:AStack
 	
 	SUBR_INT PROC FAR
-	PUSH AX
-	PUSH DX
+	dw ax1 0
+	dw dx1 0
+	mov ax1, ax
+	mov dx1, dx
 	
 	MOV AH, 9h
-	MOV DX, OFFSET message
+	MOV dx1, OFFSET message
 	INT 21h
+
+    MOV AL, 20h ; разрешение обработки прерываний
+    OUT 20h, AL ; более низкого уровня
 	
-	POP AX            ; восстанавливаем регистры
-    	POP DX
+	mov ax, ax1
+	mov dx, dx1
 
-    	MOV AL, 20h ; разрешение обработки прерываний
-    	OUT 20h, AL ; более низкого уровня
-
-
-    	IRET        ; конец прерывания
+    IRET        ; конец прерывания
 	SUBR_INT ENDP
 	
 	MAIN PROC FAR

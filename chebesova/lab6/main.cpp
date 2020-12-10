@@ -106,28 +106,18 @@ int main()
 	result << "Результат:\n";
 	cout << "№\tГраница\tКоличество чисел" << endl;
 	result << "№\tГраница\tКоличество чисел" << endl;
-	if (intervals2[0] == xmin || intervals2[intervals_size - 1] == xmax)
+
+	for (int i = 0; i < intervals_size + 1; i++)
 	{
-		for (int i = 0; i < intervals_size; i++)
+		if (i != intervals_size)
 		{
 			cout << i + 1 << "\t" << intervals2[i] << '\t' << mod2_result[i] << endl;
 			result << i + 1 << "\t" << intervals2[i] << '\t' << mod2_result[i] << endl;
 		}
-	}
-	else
-	{
-		for (int i = 0; i < intervals_size + 1; i++)
+		else
 		{
-			if (i != intervals_size)
-			{
-				cout << i + 1 << "\t" << intervals2[i] << '\t' << mod2_result[i] << endl;
-				result << i + 1 << "\t" << intervals2[i] << '\t' << mod2_result[i] << endl;
-			}
-			else
-			{
-				cout << i + 1 << "\t" << xmax << '\t' << mod2_result[i] << endl;
-				result << i + 1 << "\t" << xmax << '\t' << mod2_result[i] << endl;
-			}
+			cout << i + 1 << "\t" << xmax << '\t' << mod2_result[i] << endl;
+			result << i + 1 << "\t" << xmax << '\t' << mod2_result[i] << endl;
 		}
 	}
 

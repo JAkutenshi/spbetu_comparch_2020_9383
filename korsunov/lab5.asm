@@ -12,8 +12,8 @@ CODE SEGMENT
 	ASSUME CS:CODE, DS:DATA, SS:AStack
 	
 	SUBR_INT PROC FAR
-	dw ax1 0
-	dw dx1 0
+	ax1 dw 0
+	dx1 dw 0
 	mov ax1, ax
 	mov dx1, dx
 	

@@ -38,6 +38,9 @@ int main() {
     cout << "Введите нижние пределы диапазонов в количестве " << range_count - 1 << ": " << endl;
     for (int i = 0; i < range_count - 1; i++) {
         cin >> lower_ranges_arr[i];
+        if (lower_ranges_arr[i] == x_max && range_count == 2){
+            lower_ranges_arr[i] = x_min;
+        }
         if (lower_ranges_arr[i] < lower_ranges_arr[i - 1]) {
             cout << "Введенный предел " << lower_ranges_arr[i] << " больше предыдущего." << endl;
             cin >> lower_ranges_arr[i];
@@ -50,7 +53,7 @@ int main() {
     lower_ranges_arr[range_count - 1] = x_max;
     int* arr = new int[arr_length]();
     for (int i = 0; i < arr_length; i++)
-        arr[i] = x_min + rand() % (x_max - x_min);
+        arr[i] = x_min + rand() % (x_max - x_min + 1);
     int* range_arr = new int[range_count];
     for (int i = 0; i < range_count; i++)
         range_arr[i] = 0;
@@ -70,8 +73,12 @@ int main() {
     output << "________________________________________" << endl;
     for (int i = 0; i < range_count; i++) {
         int count1, count2;
-        if (i != 0)
-            count1 = lower_ranges_arr[i - 1];
+        if (i != 0) {
+            if (range_count == 2)
+                count1 = x_max;
+            else
+                count1 = lower_ranges_arr[i - 1];
+        }
         else
             count1 = x_min;
         if (i != range_count)

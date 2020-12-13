@@ -10,7 +10,7 @@ extern "C" {
 
 
 int main() {
-	setlocale(0, "RU");
+	setlocale(LC_ALL, "Russian");
 	int NumRanDat = 0, Xmin = 0, Xmax = 0, NInt = 0;
 	cout << "Введите размер массива (размер не должен превышать 2^14):\n";
 	cin >> NumRanDat;

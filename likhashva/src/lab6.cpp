@@ -67,20 +67,17 @@ int main() {
 	file << "Номер|Диапозон|Содержание\n";
 	cout << "-------------------------" << endl;
 	file << "-------------------------" << endl;
+	int n1, n2;
 	for (int i = 0; i < NInt; i++) {
-		int n1, n2;
-		if (i != 0) {
-			if (NInt == 2)
-				n1 = Xmax;
-			else
-				n1 = LGrInt[i - 1];
+		if (i == 0) {
+			n1 = Xmin;
+			n2 = LGrInt[i];
 		}
 		else
-			n1 = Xmin;
-		if (i != NInt)
+		{
+			n1 = LGrInt[i - 1];
 			n2 = LGrInt[i];
-		else
-			n2 = Xmax;
+		}
 		file << "  " << i + 1 << "  |  " << n1 << ", " << n2 << "  |  " << range[i] << "\n";
 		cout << "  " << i + 1 << "  |  " << n1 << ", " << n2 << "  |  " << range[i] << "\n";
 	}

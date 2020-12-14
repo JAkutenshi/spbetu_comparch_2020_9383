@@ -29,12 +29,13 @@ void main() {
 	int NInt;
 	ReadWithWelcome(NInt, "Количество интервалов: ");
 
-	auto LGrInt = new int[NInt + 1];
-	for (int i = 0; i < NInt; ++i) {
-		ReadWithWelcome(LGrInt[i], "Левая граница #" + std::to_string(i + 1) + ": ");
+	auto LGrInt = new int[NInt + 2];
+	LGrInt[0] = Xmin;
+	for (int i = 1; i < NInt + 1; ++i) {
+		ReadWithWelcome(LGrInt[i], "Левая граница #" + std::to_string(i) + ": ");
 	}
-	LGrInt[NInt] = Xmax;
-	std::sort(LGrInt, LGrInt + NInt);
+	LGrInt[NInt + 1] = Xmax;
+	std::sort(LGrInt, LGrInt + NInt + 1);
 
 	auto randoms = new int[NumRanDat];
 	std::for_each(

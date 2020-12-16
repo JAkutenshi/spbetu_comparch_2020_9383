@@ -1,0 +1,219 @@
+Microsoft (R) Macro Assembler Version 5.10                  12/9/20 23:41:39
+                                                             Page     1-1
+
+
+ 0000				AStack SEGMENT STACK
+ 0000  0400[				DB 1024 DUP(?)
+	   ??			
+			 ]	
+				
+ 0400				AStack ENDS
+				
+ 0000				DATA SEGMENT
+ 0000  0000				keep_cs DW 0			;для
+				 хранения сегмента
+ 0002  0000				keep_ip DW 0			;и с�
+				�ещения прерывания
+ 0004				DATA ENDS
+				
+ 0000				CODE SEGMENT
+				    ASSUME SS:AStack, DS:DATA, CS:CODE
+				
+ 0000				SUBR_INT PROC FAR
+ 0000  EB 27 90				jmp begin
+ 0003  0000				int_keep_ss DW 0		;для
+				 хранения начальных значе
+				ний сегмента стэка,
+ 0005  0000				int_keep_sp DW 0		;ука
+				зателя на стэк,
+ 0007  0000				int_keep_ax DW 0		;рег
+				истра промежуточных опер�
+				�ций
+ 0009  0010[				IntStack DW 16 DUP(?)		;вну
+				тренний стэк
+	   ????			
+			 ]	
+				
+ 0029				begin:
+ 0029  2E: 89 26 0005 R			mov int_keep_sp, sp		;зап
+				оминаем
+ 002E  2E: A3 0007 R			mov int_keep_ax, ax		;нуж
+				ные нам
+ 0032  8C D0				mov ax, ss			;нач
+				альные
+ 0034  2E: A3 0003 R			mov int_keep_ss, ax		;рег
+				истры
+					
+ 0038  2E: A1 0007 R			mov ax, int_keep_ax
+ 003C  BC 0029 R			mov sp, OFFSET begin
+ 003F  B8 ---- R		   	mov ax, seg IntStack
+ 0042  8E D0				mov ss, ax
+					
+ 0044  50				push ax			;сохране
+				ние
+ 0045  52				push dx			;изменяе
+				мых регистров
+					
+ 0046  B0 B6				mov al, 10110110b		;уст
+				анавливаем режим для
+Microsoft (R) Macro Assembler Version 5.10                  12/9/20 23:41:39
+                                                             Page     1-2
+
+
+ 0048  E6 43				out 43h, al			;для
+				 2-го канала
+					
+ 004A  B8 012C				mov ax, 300 			;опр
+				еделяем звук с заданной ч�
+				�стотой
+					
+ 004D  E6 42				out 42h, al			;уст
+				анавливаем звук
+ 004F  8A C4				mov al, ah			;в п�
+				�рт
+ 0051  E6 42				out 42h, al			;дин
+				амика
+					
+ 0053  E4 61				in al, 61h			;выб
+				ор режима
+ 0055  8A E0				mov ah, al			;упр
+				авления
+ 0057  0C 03				or al, 3			;дин
+				амиком
+ 0059  E6 61				out 61h, al			;вкл
+				ючение звука
+ 005B  2B C9				sub cx, cx
+ 005D				kill_time:
+ 005D  E2 FE				loop kill_time
+ 005F  8A C4				mov al, ah
+ 0061  E6 61				out 61h, al 			;вык
+				лючение звука
+ 0063  5A				pop dx				;вос
+				становление регистра dx
+ 0064  58				pop ax				;вос
+				становление регистра ax
+ 0065  2E: A3 0007 R			mov int_keep_ax, ax
+ 0069  2E: 8B 26 0005 R			mov sp, int_keep_sp
+ 006E  2E: A1 0003 R			mov ax, int_keep_ss
+ 0072  8E D0				mov ss, ax
+ 0074  2E: A1 0007 R			mov ax, int_keep_ax
+ 0078  B0 20				mov al, 20h			;раз
+				решаем обработку прерыва�
+				�ий
+ 007A  E6 20				out 20h, al			;с б�
+				�лее низкими уровнями
+ 007C  CF				iret				;кон
+				ец прерывания
+				
+ 007D				SUBR_INT ENDP
+				
+ 007D				MAIN PROC FAR
+ 007D  1E				push ds
+ 007E  2B C0				sub ax, ax
+ 0080  50				push ax
+ 0081  B8 ---- R			mov ax, DATA
+ 0084  8E D8				mov ds, ax
+					
+Microsoft (R) Macro Assembler Version 5.10                  12/9/20 23:41:39
+                                                             Page     1-3
+
+
+ 0086  B4 35				mov ah, 35h			;пол
+				учаем вектор прерывания
+ 0088  B0 08				mov al, 08h
+ 008A  CD 21				int 21h
+					
+ 008C  89 1E 0002 R			mov keep_ip, bx
+ 0090  8C 06 0000 R			mov keep_cs, es
+ 0094  1E				push ds
+ 0095  BA 0000 R			mov dx, offset SUBR_INT
+ 0098  B8 ---- R			mov ax, seg SUBR_INT
+ 009B  8E D8				mov ds, ax
+					
+ 009D  B4 25				mov ah, 25h			;уст
+				анавливаем вектор прерыв�
+				�ния
+ 009F  B0 08				mov al, 08h
+ 00A1  CD 21				int 21h
+					
+ 00A3  1F				pop ds
+ 00A4				check_end:
+ 00A4  B4 01				mov ah, 01h 			;пол
+				учаем символ
+ 00A6  CD 21				int 21h
+ 00A8  3C 1B				cmp al, 1bh			;про
+				грамма работает, пока не б
+				удет нажат ESC
+ 00AA  74 02				je func_end
+ 00AC  EB F6				jmp check_end
+ 00AE				func_end:
+ 00AE  FA				cli				;зап
+				рещаем прерывания от внеш
+				них устройств
+ 00AF  1E				push ds
+ 00B0  8B 16 0002 R			mov dx, keep_ip
+ 00B4  A1 0000 R			mov ax, keep_cs
+ 00B7  8E D8				mov ds, ax
+					
+ 00B9  B4 25				mov ah, 25h
+ 00BB  B0 08				mov al, 08h
+ 00BD  CD 21				int 21h
+					
+ 00BF  1F				pop ds
+ 00C0  FB				sti				;раз
+				решаем прерывания от внеш
+				них устройств
+ 00C1  CB				ret
+ 00C2				MAIN ENDP
+				
+ 00C2				CODE ENDS
+				
+				END MAIN
+Microsoft (R) Macro Assembler Version 5.10                  12/9/20 23:41:39
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0400	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	00C2	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0004	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+BEGIN  . . . . . . . . . . . . .  	L NEAR	0029	CODE
+
+CHECK_END  . . . . . . . . . . .  	L NEAR	00A4	CODE
+
+FUNC_END . . . . . . . . . . . .  	L NEAR	00AE	CODE
+
+INTSTACK . . . . . . . . . . . .  	L WORD	0009	CODE	Length = 0010
+INT_KEEP_AX  . . . . . . . . . .  	L WORD	0007	CODE
+INT_KEEP_SP  . . . . . . . . . .  	L WORD	0005	CODE
+INT_KEEP_SS  . . . . . . . . . .  	L WORD	0003	CODE
+
+KEEP_CS  . . . . . . . . . . . .  	L WORD	0000	DATA
+KEEP_IP  . . . . . . . . . . . .  	L WORD	0002	DATA
+KILL_TIME  . . . . . . . . . . .  	L NEAR	005D	CODE
+
+MAIN . . . . . . . . . . . . . .  	F PROC	007D	CODE	Length = 0045
+
+SUBR_INT . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 007D
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  LAB5		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+    111 Source  Lines
+    111 Total   Lines
+     20 Symbols
+
+  48004 + 457206 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

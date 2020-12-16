@@ -35,12 +35,11 @@ int main() {
         exit(1);
     }
     int* lower_ranges_arr = new int[range_count];
-    cout << "Введите нижние пределы диапазонов в количестве " << range_count - 1 << ": " << endl;
+    if (range_count > 1)
+        cout << "Введите нижние пределы диапазонов в количестве " << range_count - 1 << ": " << endl;
+    lower_ranges_arr[0] = x_min;
     for (int i = 0; i < range_count - 1; i++) {
         cin >> lower_ranges_arr[i];
-        if (lower_ranges_arr[i] == x_max && range_count == 2){
-            lower_ranges_arr[i] = x_min;
-        }
         if (lower_ranges_arr[i] < lower_ranges_arr[i - 1]) {
             cout << "Введенный предел " << lower_ranges_arr[i] << " больше предыдущего." << endl;
             cin >> lower_ranges_arr[i];
@@ -73,20 +72,29 @@ int main() {
     output << "________________________________________" << endl;
     for (int i = 0; i < range_count; i++) {
         int count1, count2;
+        char bracket1, bracket2;
         if (i != 0) {
-            if (range_count == 2)
-                count1 = x_max;
-            else
-                count1 = lower_ranges_arr[i - 1];
+            bracket1 = '(';
+            count1 = lower_ranges_arr[i - 1];
         }
-        else
+        else {
+            bracket1 = '[';
             count1 = x_min;
-        if (i != range_count)
+        }
+        if (i != range_count - 1) {
+            bracket2 = ']';
             count2 = lower_ranges_arr[i];
-        else
+        }
+        else {
+            bracket2 = ']';
             count2 = x_max;
-        output << i + 1 << "    |  " << count1 << ", " << count2 << "  |  " << range_arr[i] << endl;
-        cout << i + 1 << "    |  " << count1 << ", " << count2 << "  |  " << range_arr[i] << endl;
+        }
+        if (range_arr[i] == 0 && x_max == lower_ranges_arr[i]) {
+            bracket1 = '(';
+            bracket2 = ')';
+        }
+        output << i + 1 << "    |  " << bracket1 << count1 << ", " << count2 << bracket2 << "  |  " << range_arr[i] << endl;
+        cout << i + 1 << "    |  " << bracket1 << count1 << ", " << count2 << bracket2 << "  |  " << range_arr[i] << endl;
     }
     delete[] lower_ranges_arr;
     delete[] arr;

@@ -1,0 +1,126 @@
+Microsoft (R) Macro Assembler Version 5.10                  12/14/20 02:58:0
+                                                             Page     1-1
+
+
+				; HELLO2 - Учебная программа N2  лаб.раб.#1 по 
+				дисциплине "Архитектура компьютера"
+				;          Программа использует процедуру для п
+				ечати строки
+				;
+				;      ТЕКСТ  ПРОГРАММЫ
+				
+ = 0024				EOFLine  EQU  '$'         ; Определение символь
+				ной константы
+				                          ;     "Конец строки"
+				
+				; Стек  программы
+				
+ 0000				AStack    SEGMENT  STACK
+ 0000  000C[			          DW 12 DUP(?)    ; Отводится 12 слов п
+				амяти
+	   ????			
+			 ]	
+				
+ 0018				AStack    ENDS
+				
+				; Данные программы
+				
+ 0000				DATA      SEGMENT
+				
+				;  Директивы описания данных
+				
+ 0000  48 65 6C 6C 6F 20	HELLO     DB 'Hello World!', 0AH, 0DH,EOFLine
+       57 6F 72 6C 64 21	
+       0A 0D 24			
+ 000F  53 74 75 64 65 6E	GREETING  DB 'Student from 9383 - Orlov Daniil$
+				'
+       74 20 66 72 6F 6D	
+       20 39 33 38 33 20	
+       2D 20 4F 72 6C 6F	
+       76 20 44 61 6E 69	
+       69 6C 24			
+ 0030				DATA      ENDS
+				
+				; Код программы
+				
+ 0000				CODE      SEGMENT
+				          ASSUME CS:Code DS:DATA SS:AStack
+hello2.asm(28): warning A4001: Extra characters on line
+				; Процедура печати строки
+ 0000				WriteMsg  PROC  NEAR
+ 0000  B4 09			          mov   AH,9
+ 0002  CD 21			          int   21h  ; Вызов функции DOS по пре
+				рыванию
+ 0004  C3			          ret
+ 0005				WriteMsg  ENDP
+				
+				; Головная процедура
+ 0005				Main      PROC  FAR
+ 0005  1E			          push  DS       ;\  Сохранение адреса 
+Microsoft (R) Macro Assembler Version 5.10                  12/14/20 02:58:0
+                                                             Page     1-2
+
+
+				начала PSP в стеке
+ 0006  2B C0			          sub   AX,AX    ; > для последующего в
+				осстановления по
+ 0008  50			          push  AX       ;/  команде ret, завер
+				шающей процедуру.
+ 0009  B8 ---- R		          mov   AX,DATA             ; Загрузка 
+				сегментного
+ 000C  8E D8			          mov   DS,AX               ; регистра 
+				данных.
+ 000E  BA 0000 R		          mov   DX, OFFSET HELLO    ; Вывод на 
+				экран первой
+ 0011  E8 0000 R		          call  WriteMsg            ; строки пр
+				иветствия.
+ 0014  BA 000F R		          mov   DX, OFFSET GREETING ; Вывод на 
+				экран второй
+ 0017  E8 0000 R		          call  WriteMsg            ; строки пр
+				иветствия.
+ 001A  CB			          ret                       ; Выход в D
+				OS по команде,
+				                                    ; находящей
+				ся в 1-ом слове PSP.
+ 001B				Main      ENDP
+ 001B				CODE      ENDS
+				          END Main
+Microsoft (R) Macro Assembler Version 5.10                  12/14/20 02:58:0
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0018	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	001B	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0030	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+EOFLINE  . . . . . . . . . . . .  	NUMBER	0024	
+
+GREETING . . . . . . . . . . . .  	L BYTE	000F	DATA
+
+HELLO  . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0005	CODE	Length = 0016
+
+WRITEMSG . . . . . . . . . . . .  	N PROC	0000	CODE	Length = 0005
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  hello2		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     51 Source  Lines
+     51 Total   Lines
+     13 Symbols
+
+  48000 + 461307 Bytes symbol space free
+
+      1 Warning Errors
+      0 Severe  Errors

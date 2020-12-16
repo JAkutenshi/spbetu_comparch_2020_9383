@@ -16,3 +16,4 @@ git fetch AnastasiaSergiencova2305 # Сергиенкова
 git fetch Machumak00               # Чумак
 git fetch RomanRybnikov            # Рыбников
 git fetch heesus                   # Орлов      
+git fetch vasilysamulevich         # Самулевич

@@ -15,16 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Source.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <MASM Include="mod1.asm">
-      <Filter>Исходные файлы</Filter>
-    </MASM>
-    <MASM Include="mod2.asm">
-      <Filter>Исходные файлы</Filter>
-    </MASM>
   </ItemGroup>
 </Project>

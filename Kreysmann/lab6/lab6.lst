@@ -1,0 +1,93 @@
+Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 02:43:32
+ass.asm							     Page 1 - 1
+
+
+				.Model flat,c
+
+ 00000000			.data
+ 00000000 0000			tempI dw 0	;для элементов массива randArray
+ 00000000			.code
+ 00000000			funcMasm proc C 
+ 00000000  8B 44 24 04			mov  eax,[esp+4] ; result в eax
+ 00000004  8B 5C 24 08			mov  ebx,[esp+8] ; LGrInt в ebx	
+ 00000008  8B 54 24 0C			mov  edx,[esp+12]; randArray в edx
+ 0000000C  66| 8B 7C 24			mov  di, [esp+16] ; NInt в di
+	   10
+ 00000011  66| 8B 4C 24			mov  cx, [esp+20] ; NumRanDat в cx
+	   14
+ 00000016  81 E1 0000FFFF		and ecx,0000ffffh
+ 0000001C  81 E7 0000FFFF		and edi,0000ffffh
+
+ 00000022				metka1:
+ 00000022  66| 50				push ax	
+ 00000024  66| 8B 02				mov ax,[edx]
+ 00000027  66| A3				mov tempI,ax	;в tempI - текущее число из randArray
+	   00000000 R
+ 0000002D  66| 58				pop ax
+
+ 0000002F  BE 00000000				mov esi,0		; индекс для массивов LGrInt и result
+ 00000034  51					push ecx		; сохраняем счетчик для внешнего цикла
+ 00000035  8B CF				mov ecx,edi		; в ecx - счетчик для внутреннего цикла
+ 00000037					metka2:
+ 00000037  53						push ebx	
+ 00000038  66| 8B 1C 33					mov bx,[ebx+esi] ;в bx - текущий элемент из LGrInt
+ 0000003C  66| 39 1D					cmp tempI,bx	 ;сравневаем очередную левую границу с очередным случайным числом
+	   00000000 R
+ 00000043  7D 06					jge metka3		 ;если число больше границы, то оно входит в интервал
+ 00000045  83 C6 02					add esi,2	 ;прибавляем к индексу массива LGrInt 2
+ 00000048  5B						pop ebx		
+ 00000049  E2 EC				loop metka2			 ;продвигаемся дальше по внутреннему циклу
+ 0000004B					metka3:				 
+ 0000004B  66| 8B 1C 30					mov bx, [eax+esi] ;получаем элемент из result
+ 0000004F  66| 43					inc bx			  ;увеличиваем его на 1 
+ 00000051  66| 89 1C 30					mov [eax+esi],bx  ;зааносим обратно в result
+ 00000055  5B						pop ebx	 
+ 00000056  59						pop ecx			  ;в ecx счетчик для внешнего цикла
+ 00000057  83 C2 02					add edx,2			 ;прибавляем к индекусу массива randArray 2
+ 0000005A  E2 C6			loop metka1 
+					
+ 0000005C  C3				ret
+ 0000005D			funcMasm endp
+				end
+Microsoft (R) Macro Assembler Version 14.28.29334.0	    12/03/20 02:43:32
+ass.asm							     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000002 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000005D Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+funcMasm . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000005D Public C
+  metka1 . . . . . . . . . . . .	L Near	 00000022 _TEXT	
+  metka2 . . . . . . . . . . . .	L Near	 00000037 _TEXT	
+  metka3 . . . . . . . . . . . .	L Near	 0000004B _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000001h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+tempI  . . . . . . . . . . . . .	Word	 00000000 _DATA	
+
+	   0 Warnings
+	   0 Errors

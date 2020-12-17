@@ -45,15 +45,16 @@ int main() {
 			exit(1);
 		}
 	}
-	LGrInt[NInt - 1] = Xmax;
+	LGrInt[NInt - 1] = Xmax + 1;
 	int* arr = new int[NumRanDat]();
 	for (int i = 0; i < NumRanDat; i++) {
-		arr[i] = Xmin + rand() % (Xmax - Xmin);
+		arr[i] = rand() % (Xmax - Xmin + 1) + Xmin;
 	}
 	int* range = new int[NInt];
 	for (int i = 0; i < NInt; i++)
 		range[i] = 0;
 	distribution(NumRanDat, arr, LGrInt, range);
+	LGrInt[NInt - 1] -= 1;
 	ofstream file("result.txt");
 	cout << "\n—генерированные псевдослучайные числа:\n";
 	file << "—генерированные псевдослучайные числа:\n";

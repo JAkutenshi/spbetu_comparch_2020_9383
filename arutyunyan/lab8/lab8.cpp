@@ -2,8 +2,8 @@
 #include <math.h>
 
 
-float poly(float x, int n, float* c) {
-    float result = 0;
+double poly(double x, int n, double* c) {
+    double result = 0;
 
     __asm {
         ;  умножаем на n - 1
@@ -43,18 +43,19 @@ float poly(float x, int n, float* c) {
 
 int main()
 {
-    float x;
+    double x;
     int n;
 
-    std::cout << "Введите x: ";
+    std::cout << "Enter x: ";
     std::cin >> x;
-    std::cout << "Введите n: ";
+    std::cout << "Enter n: ";
     std::cin >> n;
 
-    float c = new float[n];
+    std::cout << "Enter " << n << " coefficients: ";
+    double* c = new double[n];
     for (int i = 0; i < n; ++i) {
         std::cin >> c[i];
     }
 
-    std::cout << "Ответ: " << poly(x, n, c) << std::endl;
+    std::cout << "Answer: " << poly(x, n, c) << std::endl;
 }

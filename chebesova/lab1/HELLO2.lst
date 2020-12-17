@@ -1,0 +1,130 @@
+Microsoft (R) Macro Assembler Version 5.10                  12/17/20 07:01:1
+                                                             Page     1-1
+
+
+       1				; HELLO2 - Учебная программа N2  лаб.ра
+					б.#1 по дисциплине "Архитектура компьют
+					ера"
+       2				;          Программа использует процеду
+					ру для печати строки
+       3				;
+       4				;      ТЕКСТ  ПРОГРАММЫ
+       5				
+       6 = 0024				EOFLine  EQU  '$'         ; Определение
+					 символьной константы
+       7				                          ;     "Конец 
+					строки"
+       8				
+       9				; Стек  программы
+      10				
+      11 0000				AStack    SEGMENT  STACK
+      12 0000  000C[			          DW 12 DUP(?)    ; Отводится 1
+					2 слов памяти
+      13	   ????			
+      14			 ]	
+      15				
+      16 0018				AStack    ENDS
+      17				
+      18				; Данные программы
+      19				
+      20 0000				DATA      SEGMENT
+      21				
+      22				;  Директивы описания данных
+      23				
+      24 0000  48 65 6C 6C 6F 20	HELLO     DB 'Hello Worlds!', 0AH, 0DH,
+					EOFLine
+      25       57 6F 72 6C 64 73	
+      26       21 0A 0D 24		
+      27 0010  53 74 75 64 65 6E	GREETING  DB 'Student from 9383 Chebeso
+					va I.D. - $'
+      28       74 20 66 72 6F 6D	
+      29       20 39 33 38 33 20	
+      30       43 68 65 62 65 73	
+      31       6F 76 61 20 49 2E	
+      32       44 2E 20 2D 20 24	
+      33 0034				DATA      ENDS
+      34				
+      35				; Код программы
+      36				
+      37 0000				CODE      SEGMENT
+      38				          ASSUME CS:Code DS:DATA SS:ASt
+					ack
+hello2.asm(28): warning A4001: Extra characters on line
+      39				; Процедура печати строки
+      40 0000				WriteMsg  PROC  NEAR
+      41 0000  B4 09			          mov   AH,9
+      42 0002  CD 21			          int   21h  ; Вызов функции DO
+					S по прерыванию
+      43 0004  C3			          ret
+      44 0005				WriteMsg  ENDP
+Microsoft (R) Macro Assembler Version 5.10                  12/17/20 07:01:1
+                                                             Page     1-2
+
+
+      45				
+      46				; Головная процедура
+      47 0005				Main      PROC  FAR
+      48 0005  1E			          push  DS       ;\  Сохранение
+					 адреса начала PSP в стеке
+      49 0006  2B C0			          sub   AX,AX    ; > для послед
+					ующего восстановления по
+      50 0008  50			          push  AX       ;/  команде re
+					t, завершающей процедуру.
+      51 0009  B8 ---- R		          mov   AX,DATA             ; З
+					агрузка сегментного
+      52 000C  8E D8			          mov   DS,AX               ; р
+					егистра данных.
+      53 000E  BA 0000 R		          mov   DX, OFFSET HELLO    ; В
+					ывод на экран первой
+      54 0011  E8 0000 R		          call  WriteMsg            ; с
+					троки приветствия.
+      55 0014  BA 0010 R		          mov   DX, OFFSET GREETING ; В
+					ывод на экран второй
+      56 0017  E8 0000 R		          call  WriteMsg            ; с
+					троки приветствия.
+      57 001A  CB			          ret                       ; В
+					ыход в DOS по команде,
+      58				                                    ; н
+					аходящейся в 1-ом слове PSP.
+      59 001B				Main      ENDP
+      60 001B				CODE      ENDS
+      61				          END Main
+Microsoft (R) Macro Assembler Version 5.10                  12/17/20 07:01:1
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0018	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	001B	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0034	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+EOFLINE  . . . . . . . . . . . .  	NUMBER	0024	
+
+GREETING . . . . . . . . . . . .  	L BYTE	0010	DATA
+
+HELLO  . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0005	CODE	Length = 0016
+
+WRITEMSG . . . . . . . . . . . .  	N PROC	0000	CODE	Length = 0005
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  hello2		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     51 Source  Lines
+     51 Total   Lines
+     13 Symbols
+
+  47466 + 461841 Bytes symbol space free
+
+      1 Warning Errors
+      0 Severe  Errors

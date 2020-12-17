@@ -6,6 +6,7 @@ AStack ENDS
 DATA SEGMENT
 
 STRING_REPR db "00000000000000000000000000000000", 0ah, '$'  ; 32 символов для 32 бит
+DXAX_STRING db "dx:ax = $"
 ZERO_SYMBOL EQU '0'
 ONE_SYMBOL EQU '1'
 BITS_NUMBER EQU 32
@@ -22,11 +23,13 @@ Main PROC FAR
     mov ax, DATA
     mov ds, ax
     
-    mov dx, 1
+    mov dx, 07000h
     mov ax, 1
     call int_to_string
 
     mov ah, 09h
+    mov dx, offset DXAX_STRING
+    int 21h
     mov dx, offset STRING_REPR
     int 21h
 
@@ -36,6 +39,8 @@ Main PROC FAR
     ; теперь в dx:ax число из STRING_REPR
     call int_to_string
     mov ah, 09h
+    mov dx, offset DXAX_STRING
+    int 21h
     mov dx, offset STRING_REPR
     int 21h
 
@@ -60,10 +65,19 @@ int_to_string proc near
     cmp bx, 1
     jne init_vars
 
-    ; в ax - доп.код => отнимаем единицу до обратного кода
-    ; sub ax, 1
-    ; ; теперь инвертируем все биты кроме первого до прямого кода
-    ; xor ax, 07fffh
+    ; ===========
+    ; в ax - часть доп.кода => отнимаем единицу до обратного кода
+    sub ax, 1
+    ; если произошелся заем в старший значащий бит, то cf = 1
+    ; если cf = 1, то нужно отнять 1 еще и из dx
+    jnc end_of_ready
+    sub dx, 1
+
+    end_of_ready:
+        ; теперь инвертируем все биты кроме первого до прямого кода
+        xor ax, 0ffffh
+        xor dx, 07fffh
+    ; ===========
 
     init_vars:
         mov di, offset STRING_REPR

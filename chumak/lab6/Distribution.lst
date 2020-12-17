@@ -1,0 +1,90 @@
+Microsoft (R) Macro Assembler Version 14.28.29335.0	    12/09/20 22:08:11
+Distribution.asm					     Page 1 - 1
+
+
+				.686
+				.MODEL FLAT, C
+				.STACK
+ 00000000			.DATA
+ 00000000			.CODE
+ 00000000			distribution PROC C arr_length:dword, arr:dword, lower_ranges_arr:dword, range_arr:dword
+
+ 00000003  B9 00000000			mov ecx, 0			;счетчик для прохода по массиву
+ 00000008  8B 5D 0C			mov ebx, [arr] 
+ 0000000B  8B 75 10			mov esi, [lower_ranges_arr] 
+ 0000000E  8B 7D 14			mov edi, [range_arr] 
+
+ 00000011			f1:
+ 00000011  8B 13			mov edx, [ebx]		;берем элемент входного массива
+ 00000013  53				push ebx			;сохраняем указатель на текущий элемент
+ 00000014  2B DB			sub ebx, ebx		;обнуляем указатель
+
+ 00000016			f2:
+ 00000016  8B C3			mov eax, ebx		;eax содержит текущий индекс массива границ
+ 00000018  C1 E0 02			shl eax, 2			;индекс умножаем на 4, так как каждый элемент по 4 байт
+ 0000001B  3B 14 06			cmp edx, [esi+eax]	;сравниваем текующий элемент с текущей левой границей
+ 0000001E  7E 03			jle fe
+ 00000020  43				inc ebx
+ 00000021  EB F3			jmp f2
+
+ 00000023			fe:
+ 00000023  03 C7			add eax, edi		;после сложения указываем на элемент в результирующем массиве для инкрементирования
+ 00000025  8B 10			mov edx, [eax]
+ 00000027  42				inc edx
+ 00000028  89 10			mov [eax], edx
+ 0000002A  5B				pop ebx				;забираем текущий элемент и ссылаемся на новый
+ 0000002B  83 C3 04			add ebx, 4
+ 0000002E  41				inc ecx				;инкрементируем индекс массива
+ 0000002F  3B 4D 08			cmp ecx, arr_length
+ 00000032  7C DD			jl f1
+
+				ret
+ 00000036			distribution ENDP
+
+				END 
+Microsoft (R) Macro Assembler Version 14.28.29335.0	    12/09/20 22:08:11
+Distribution.asm					     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00000400 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000036 Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+distribution . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000036 Public C
+  arr_length . . . . . . . . . .	DWord	 bp + 00000008
+  arr  . . . . . . . . . . . . .	DWord	 bp + 0000000C
+  lower_ranges_arr . . . . . . .	DWord	 bp + 00000010
+  range_arr  . . . . . . . . . .	DWord	 bp + 00000014
+  f1 . . . . . . . . . . . . . .	L Near	 00000011 _TEXT	
+  f2 . . . . . . . . . . . . . .	L Near	 00000016 _TEXT	
+  fe . . . . . . . . . . . . . .	L Near	 00000023 _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000001h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+
+	   0 Warnings
+	   0 Errors

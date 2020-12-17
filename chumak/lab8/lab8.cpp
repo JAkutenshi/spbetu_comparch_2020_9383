@@ -12,7 +12,6 @@ int main() {
 double cosh(double x) {
     double result;
     double exp1;
-    double exp2;
     int degree = -13; // для вычисления по другой формуле
     _asm {
         fld x;              //st(0) = x

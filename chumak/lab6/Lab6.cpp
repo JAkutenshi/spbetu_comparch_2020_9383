@@ -1,4 +1,4 @@
-﻿#include <cstdlib>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -8,6 +8,7 @@ extern "C" {
 }
 
 int main() {
+    srand(time(NULL));
     setlocale(0, "RU");
     int arr_length = 0, x_min = 0, x_max = 0, range_count = 0;
     cout << "Введите длину массива (длина массива не должна превышать 2^14): ";
@@ -35,18 +36,19 @@ int main() {
         exit(1);
     }
     int* lower_ranges_arr = new int[range_count];
-    if (range_count > 1)
-        cout << "Введите нижние пределы диапазонов в количестве " << range_count - 1 << ": " << endl;
     lower_ranges_arr[0] = x_min;
-    for (int i = 0; i < range_count - 1; i++) {
-        cin >> lower_ranges_arr[i];
-        if (lower_ranges_arr[i] < lower_ranges_arr[i - 1]) {
-            cout << "Введенный предел " << lower_ranges_arr[i] << " больше предыдущего." << endl;
+    if (range_count > 1) {
+        cout << "Введите нижние пределы диапазонов в количестве " << range_count << ": " << endl;
+        for (int i = 0; i < range_count; i++) {
             cin >> lower_ranges_arr[i];
-        }
-        if (lower_ranges_arr[i] < x_min || lower_ranges_arr[i] > x_max) {
-            cout << "Неверно задан нижний предел. Выход из программы." << endl;
-            exit(1);
+            if (lower_ranges_arr[i] < lower_ranges_arr[i - 1]) {
+                cout << "Введенный предел " << lower_ranges_arr[i] << " больше предыдущего." << endl;
+                cin >> lower_ranges_arr[i];
+            }
+            if (lower_ranges_arr[i] < x_min || lower_ranges_arr[i] > x_max) {
+                cout << "Неверно задан нижний предел. Выход из программы." << endl;
+                exit(1);
+            }
         }
     }
     lower_ranges_arr[range_count - 1] = x_max;
@@ -74,8 +76,8 @@ int main() {
         int count1, count2;
         char bracket1, bracket2;
         if (i != 0) {
-            bracket1 = '(';
-            count1 = lower_ranges_arr[i - 1];
+            bracket1 = '[';
+            count1 = lower_ranges_arr[i - 1] + 1;
         }
         else {
             bracket1 = '[';
@@ -88,10 +90,6 @@ int main() {
         else {
             bracket2 = ']';
             count2 = x_max;
-        }
-        if (range_arr[i] == 0 && x_max == lower_ranges_arr[i]) {
-            bracket1 = '(';
-            bracket2 = ')';
         }
         output << i + 1 << "    |  " << bracket1 << count1 << ", " << count2 << bracket2 << "  |  " << range_arr[i] << endl;
         cout << i + 1 << "    |  " << bracket1 << count1 << ", " << count2 << bracket2 << "  |  " << range_arr[i] << endl;

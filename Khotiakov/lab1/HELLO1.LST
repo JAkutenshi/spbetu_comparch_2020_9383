@@ -1,0 +1,111 @@
+Microsoft (R) Macro Assembler Version 5.10                  9/16/20 23:21:22
+                                                             Page     1-1
+
+
+
+				; HELLO1.ASM -  ��饭��� ����� �祡��� �ண�
+				���� ���.ࠡ. N1
+				;               �� ���樯���� "���⥪��� ����
+				����"
+				; *********************************************
+				********************
+				; �����祭��: �ணࠬ�� �ନ��� � �뢮��� �� 
+				�࠭ �ਢ���⢨�
+				;             ���짮��⥫� � ������� �㭪樨 ��
+				� "�뢮� ��ப�"
+				;             (����� 09 ���뢠��� 21h), ����
+				�:
+				;              - ���ᯥ稢��� �뢮� �� �࠭ ��
+				ப� ᨬ�����,
+				;                �����稢��饩�� ������ "$";
+				;              - �ॡ�� ������� � ॣ���� ah 
+				����� �㭪樨=09h,
+				;                � � ॣ���� dx -  ᬥ饭��  �
+				���  �뢮�����
+				;                ��ப�;
+				;              - �ᯮ���� ॣ����  ax  �  �� 
+				��࠭�� ���
+				;                ᮤ�ন���.
+				; *********************************************
+				*********************
+
+				   DOSSEG                                      
+				; ������� ᥣ���⮢ ��� ���
+				   .MODEL  SMALL                               
+				; ������ �����-SMALL(�����)
+				   .STACK  100h                                
+				; �⢥�� ��� �⥪ 256 ����
+				   .DATA                                       
+				; ��砫� ᥣ���� ������
+ 0000				Greeting  LABEL  BYTE                          
+				; �����  �ਢ���⢨�
+ 0000  82 A0 E1 20 AF E0	   DB '��� �ਢ������ ��.��.9383 - ������� �.
+				�.',13,10,'$'
+       A8 A2 A5 E2 E1 E2	
+       A2 E3 A5 E2 20 E1	
+       E2 2E A3 E0 2E 39	
+       33 38 33 20 2D 20	
+       83 AB A0 A4 AA A8	
+       E5 20 80 2E 80 2E	
+       0D 0A 24			
+				   .CODE                                ; ��砫
+				� ᥣ���� ����
+ 0000  B8 ---- R		   mov  ax, @data                        ; ����
+				㧪� � DS ���� ��砫�
+ 0003  8E D8			   mov  ds, ax                           ; ᥣ�
+				��� ������
+ 0005  BA 0000 R		   mov  dx, OFFSET Greeting              ; ����
+				㧪� � dx ᬥ饭��
+Microsoft (R) Macro Assembler Version 5.10                  9/16/20 23:21:22
+                                                             Page     1-2
+
+
+				                                        ; ����
+				� ⥪�� �ਢ���⢨�
+ 0008				DisplayGreeting:
+ 0008  B4 09			   mov  ah, 9                            ; # ��
+				��樨 ��� ���� ��ப�
+ 000A  CD 21			   int  21h                             ; �뢮�
+				 �� �࠭  �ਢ���⢨�
+ 000C  B4 4C			   mov  ah, 4ch                          ; # ��
+				��樨 ��� �����襭�� �ணࠬ��
+ 000E  CD 21			   int  21h                             ; �����
+				襭�� �ணࠬ�� � ��室 � ���
+				   END
+Microsoft (R) Macro Assembler Version 5.10                  9/16/20 23:21:22
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	002D	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0100	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	0010	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+DISPLAYGREETING  . . . . . . . .  	L NEAR	0008	_TEXT
+
+GREETING . . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  hello1		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     33 Source  Lines
+     33 Total   Lines
+     19 Symbols
+
+  47994 + 461313 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

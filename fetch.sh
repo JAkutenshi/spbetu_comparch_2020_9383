@@ -17,3 +17,4 @@ git fetch Machumak00               # Чумак
 git fetch RomanRybnikov            # Рыбников
 git fetch heesus                   # Орлов      
 git fetch vasilysamulevich         # Самулевич
+git fetch sfpnmrnk                 # Пономаренко

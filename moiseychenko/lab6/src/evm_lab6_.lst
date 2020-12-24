@@ -1,0 +1,89 @@
+Microsoft (R) Macro Assembler Version 14.27.29111.0	    12/24/20 11:54:56
+distribution.asm					     Page 1 - 1
+
+
+				.model flat,c
+
+ 00000000			.code
+ 00000000			distribution proc C arr: dword, LGrInt: dword, NumRanDat: dword, result: dword
+
+					
+ 00000003  8B 5D 08			mov ebx, [arr]
+ 00000006  8B 75 0C			mov esi, [LGrInt]
+ 00000009  8B 7D 14			mov edi, [result]
+ 0000000C  8B 4D 10			mov ecx, [NumRanDat]
+
+ 0000000F				my_loop:
+ 0000000F  8B 03				mov eax, [ebx] ; eax = current_arr
+ 00000011  83 C3 04				add ebx, 4 ; ebx = next_arr
+
+ 00000014				comparison:
+ 00000014  3B 46 04				cmp eax, [esi+4]
+ 00000017  7D 09				jge next_LGrInt ; if current_arr >= next_LGrInt
+
+						; if current_arr < next_LGrInt: current_result++
+ 00000019  8B 07				mov eax, [edi]
+ 0000001B  83 C0 01				add eax, 1
+ 0000001E  89 07				mov [edi], eax
+ 00000020  EB 08				jmp loop_end
+
+ 00000022				next_LGrInt:
+ 00000022  83 C6 04				add esi, 4 ; esi = next_LGrInt
+ 00000025  83 C7 04				add edi, 4 ; edi = next_result
+ 00000028  EB EA				jmp comparison ; repeat comparison with the next LGrInt
+
+ 0000002A				loop_end:
+ 0000002A  49					dec ecx
+ 0000002B  83 F9 00				cmp ecx, 0
+ 0000002E  75 DF				jne my_loop
+
+					ret
+
+ 00000032			distribution endp
+				end
+Microsoft (R) Macro Assembler Version 14.27.29111.0	    12/24/20 11:54:56
+distribution.asm					     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000000 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000032 Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+distribution . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000032 Public C
+  arr  . . . . . . . . . . . . .	DWord	 bp + 00000008
+  LGrInt . . . . . . . . . . . .	DWord	 bp + 0000000C
+  NumRanDat  . . . . . . . . . .	DWord	 bp + 00000010
+  result . . . . . . . . . . . .	DWord	 bp + 00000014
+  my_loop  . . . . . . . . . . .	L Near	 0000000F _TEXT	
+  comparison . . . . . . . . . .	L Near	 00000014 _TEXT	
+  next_LGrInt  . . . . . . . . .	L Near	 00000022 _TEXT	
+  loop_end . . . . . . . . . . .	L Near	 0000002A _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000001h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+
+	   0 Warnings
+	   0 Errors

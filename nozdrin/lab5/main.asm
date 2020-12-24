@@ -39,14 +39,17 @@ ISTART:
     POP DX
     POP AX
 
-    MOV KEEP_AX, AX
+;     MOV KEEP_AX, AX
+    
+    MOV AL, 20H
+    OUT 20H,AL
+    
     MOV SP, KEEP_SP
     MOV AX, KEEP_SS
     MOV SS, AX
     MOV AX, KEEP_AX
 
-    MOV AL, 20H
-    OUT 20H,AL
+
     IRET
 SUBR_INT ENDP
 

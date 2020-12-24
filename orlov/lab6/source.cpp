@@ -71,6 +71,19 @@ int main()
 		numbers[i] = xmin + rand() % (xmax - xmin + 1) ;
 	}
 
+	cout << "Сгенерированные значения\n";
+	result << "Сгенерированные значения\n";
+	for (int i = 0; i < numbers_size; i++)
+	{
+		cout << numbers[i] << ' ';
+		result << numbers[i] << ' ';
+	}
+	cout << '\n';
+	cout << '\n';
+	result << '\n';
+	result << '\n';
+
+
 	first(numbers, numbers_size, mod1_result, xmin);
 
 	second(mod1_result, numbers_size, xmin, intervals, intervals_size, mod2_result);

@@ -19,7 +19,7 @@ AStack  ENDS
 DATA    SEGMENT
     A   DW  -2
     B   DW  1
-    I   DW  1
+    I   DW  4
     K   DW  0
     I1  DW  ?
     I2  DW  ?
@@ -39,43 +39,22 @@ f1  :
 	jle f11
     mov ax, 1	; ax = 1
 	sub ax, I	; ax = 1 - i
-	cmp ax, 0	;если ax<0
-	jle f1n
 	shl ax, 1	; ax = 2 - 2i
 	shl ax, 1	; ax = 4 - 4i
 	add ax, 3	; ax = 7 - 4i
 	mov I1,ax
 	jmp f2
 
-f1n :			;производит умножение, если ax<0
-	neg ax	
-	shl ax, 1	; ax = 2*(1 - i)
-	shl ax, 1	; ax = 2*(2 - 2i)
-	neg ax
-	add ax, 3	; ax = 7 - 4i
-	mov I1,ax
-	jmp f2
-
 f2  :           ; A > B, так как мы переходим от f1
     add ax, I	; ax = 7 - 4i + i = 7 - 3i
-	sub ax, 5	; ax = 7 - 3i - 5 = 2 - 3i
-	cmp ax, 0	;если ax<0
-	jle f2n		
+	sub ax, 5	; ax = 7 - 3i - 5 = 2 - 3i	
 	shl ax, 1	; ax = 2*(2 - 3i) = 4 - 6i = -(6i - 4)
-	jmp f3
-
-f2n :			;производит умножение, если ax<0
-	neg ax	
-	shl ax, 1	; ax = 2*(2 - 3i) = 4 - 6i = -(6i - 4)
-	neg ax
 	jmp f3
 
 
 f11 :
 	mov ax, 1	; ax = 1
 	sub ax, I	; ax = 1 - i
-	cmp ax, 0	;если ax<0
-	jle f11n
     shl ax, 1	;ax = 2*(1 - i) = 2 - 2i
 	shl ax, 1	;ax = 2*(2 - 2i) = 4 - 4i
 	add ax, I	;ax = 4 - 3i
@@ -84,29 +63,9 @@ f11 :
     jmp f22
 
 
-
-f11n :			;производит умножение, если ax<0
-	neg ax 
-	shl ax, 1	;ax = 2*(1 - i) = 2 - 2i
-	shl ax, 1	;ax = 2*(2 - 2i) = 4 - 4i
-	sub ax,I 
-	shl ax, 1	;ax = 8 - 6i
-	neg ax
-	mov I1, ax
-    jmp f22
-
-
 f22 :
-    cmp bx, ax
-	jle f22n
 	neg ax	    ;ax = -(8 - 6i) = 6i - 8
 	shr ax, 1	;ax = (6i - 8) / 2 = 3i - 4
-	add ax, 10  ; ax = 3i - 4 + 10 = 3i + 6 = 3*(i + 2)
-    jmp f3
-
-f22n :
- 	shr ax, 1	;ax = (6i - 8) / 2 = 3i - 4
-	neg ax
 	add ax, 10  ; ax = 3i - 4 + 10 = 3i + 6 = 3*(i + 2)
     jmp f3
 
@@ -136,4 +95,4 @@ fin :
 
 Main    ENDP
 CODE    ENDS
-END Main
+END Main 

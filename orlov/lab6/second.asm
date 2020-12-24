@@ -1,78 +1,74 @@
 .586p
-.MODEL flat, C
-.DATA
+.MODEL FLAT, C
 .CODE
-
 PUBLIC C second
-second PROC C result: dword, lenresult: dword, leftborders: dword, nint: dword, minx: dword, maxx: dword, output: dword
+second PROC C array: dword, array_size: dword, xmin: dword, borders: dword, intN: dword, result: dword
 
-    push esi
-    push edi
-    push ebp
+push esi
+push edi
+push ebp
 
-    mov esi, leftborders
-    mov ecx, nint 
-    mov eax, 0
+mov edi, array  
+mov esi, borders  
+mov ecx, intN  
 
-filoop:
-    mov eax, [esi]
-    sub eax, minx
-    mov [esi], eax
-    mov esi, 4
 
-loop filoop
+for_borders:  
+	mov eax, [esi]   
+	sub eax, xmin
+	mov [esi], eax
+	add esi, 4
+	loop for_borders
 
-mov edi, result
-mov ecx, nint
-mov esi, leftborders
-sub ebx, ebx
+
+mov esi, borders
+mov ecx, intN
+mov ebx, 0
 mov eax, [esi]
 
-sloop:
+for_loop:
+	push ecx  
+	mov ecx, eax 
+	push esi  
+	mov esi, result 
 
-    push ecx
-    mov ecx, eax
-    push esi
-    mov esi, output 
-
-    tloop:
-
+    for_array:
+		cmp ecx, 0 
+		je end_for
         mov eax, [edi]
-        add [esi+4*ebx], eax
+        add [esi + 4*ebx], eax
         add edi, 4
-        
-    loop tloop
+        loop for_array
 
+end_for:
     pop esi
+    inc ebx 
+	mov eax, [esi]
+	add esi, 4
+	sub eax, [esi]
+	neg eax  
+	pop ecx
+	loop for_loop
 
-    mov eax, [esi]
-    add esi, 4
-    sub eax, [esi]
-    neg eax
+mov esi, result
+mov ecx, intN
+mov eax, 0
 
-    inc ebx
-    pop ecx
-loop sloop
+fin_for: 
+	add eax, [esi]
+	add esi, 4
+	loop fin_for
 
-mov esi, output 
-mov ecx, nint
-sub eax, eax
-
-foloop:
-
-    add eax, [esi]
-    add esi, 4
-    
-loop foloop
-
-mov esi, output
-sub eax, lenresult 
+mov esi, result
+sub eax, array_size
 neg eax
-add [esi+4*ebx], eax
+
+add [esi + 4*ebx], eax
 
 pop ebp
 pop edi
 pop esi
 
+ret
 second ENDP
 END

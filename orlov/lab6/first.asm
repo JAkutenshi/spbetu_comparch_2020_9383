@@ -1,35 +1,28 @@
 .586p
-
-.MODEL flat, C
-.DATA
+.MODEL FLAT, C
 .CODE
-
 PUBLIC C first
-first PROC C res: dword, arr: dword, minx: dword
+first PROC C array: dword, arraysize: dword, res: dword, xmin: dword
 
-    push esi
-    push edi
-    push ebp
+push esi
+push edi
 
-    mov edi, res
-    mov esi, arr
+mov edi, array  ;исходный массив
+mov ecx, arraysize
+mov esi, res  ;массив на выход
 
-myloop:
+for_numbers:
+	mov eax, [edi]
+	sub eax, xmin
+	mov ebx, [esi + 4*eax] 
+	inc ebx 
+	mov [esi + 4*eax], ebx 
+	add edi, 4 
+	loop for_numbers
 
-    mov ebx, [esi]        
-    sub ebx, minx          
-    mov ebp, [edi + 4*ebx]  
-    inc ebp                
-    mov [edi + 4*ebx], ebp  
-    add esi, 4              
-
-    loop myloop
-
-pop ebp
 pop edi
 pop esi
 
-    ret
-
+ret
 first ENDP
 END 

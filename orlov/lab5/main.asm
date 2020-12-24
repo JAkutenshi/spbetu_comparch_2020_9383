@@ -36,32 +36,21 @@ SUBR_INT PROC FAR
     push dx
 
     ; подача звукового сигнала
-    Sound:
-	; Управление высотой звука динамика 
-    MOV   AL, 10110110b     ; Канал 2, режим 2, оба байта
-    OUT   43h, AL           ; Установка режима для 2-го канала 
-    MOV   AX, 300           ; Выбор высоты звука 
-    OUT   42h, AL           ; Включить таймер, который
-                                ; будет выдавать импульсы на 
-                                ; динамик с заданной частотой
-    MOV   AL, AH 
-    OUT   42h, AL           ; Занесение высоты звука в порт динамика 
-    IN    AL, 61h           ; Получить состояние динамика
-    MOV   AH, AL            ; И сохранить его в AH
-    OR    AL, 00000011b     ; Установить два младших бита
-    OUT   61h, AL           ; Включить динамик	
-
-
-	mov cx, 0Fh      ;задержка
-    mov dx, 4240h    ;для корректного
-    mov ah, 86h      ;вывода звукового
-    int 15h          ;сигнала
-
-    ; выключаем звук
-    Sound_OFF:
-    loop Sound_OFF
-    mov al, 61h
-    out 61h, al
+    MOV AL , 10110110b
+    OUT 43H, AL; Set mode for 2nd channel
+    MOV AX , 1000; Pitch of sound
+    OUT 42H, AL
+    MOV AL , AH
+    OUT 42H, AL; Set it to speaker port
+    IN AL, 61H
+    MOV AH, AL
+    OR AL,3
+    OUT 61H, AL
+    SUB CX, CX
+    KILL_TIME:
+        LOOP KILL_TIME
+        MOV AL, AH
+        OUT 61H, AL
 
     pop dx            ; восстанавливаем регистры
     pop ax

@@ -14,6 +14,24 @@ CODE SEGMENT
 
 
 SUBR_INT PROC FAR
+
+	jmp procedure
+	
+	KEEP_SS DW 0
+    KEEP_SP DW 0
+    KEEP_AX DW 0
+    MY_STACK DW 1024 DUP(?)
+	
+	procedure:
+		MOV KEEP_SP, SP
+		MOV KEEP_AX, AX
+		MOV AX, SS
+		MOV KEEP_SS, AX
+		MOV AX, KEEP_AX
+		MOV SP, OFFSET procedure
+		MOV AX, seg MY_STACK
+		MOV SS, AX
+	
     push ax	;сохраняем все изменяемые регистры
     push dx
 
@@ -34,6 +52,11 @@ SUBR_INT PROC FAR
     OUT   61h, AL           ; Включить динамик	
 
 
+	mov cx, 0Fh      ;задержка
+    mov dx, 4240h    ;для корректного
+    mov ah, 86h      ;вывода звукового
+    int 15h          ;сигнала
+
     ; выключаем звук
     Sound_OFF:
     loop Sound_OFF
@@ -42,6 +65,13 @@ SUBR_INT PROC FAR
 
     pop dx            ; восстанавливаем регистры
     pop ax
+	
+	MOV  KEEP_AX, AX
+    MOV SP, KEEP_SP
+    MOV AX, KEEP_SS
+    MOV SS, AX
+    MOV AX, KEEP_AX
+	
     mov al, 20h ; разрешение обработки прерываний
     out 20h, al ; более низкого уровня
 
@@ -71,14 +101,14 @@ MAIN PROC FAR
   pop ds                  ; восстанавливаем ds
 
 
-  int 1Ch                ; наше прерывания
+  BUTTON_LOOP:
+    mov ah, 00h
+    int 16h
+    cmp al, 27
+    je exit
+    loop BUTTON_LOOP
 
-	mov cx, 0Fh      ;задержка
-    mov dx, 4240h    ;для корректного
-    mov ah, 86h      ;вывода звукового
-    int 15h          ;сигнала
-
-
+  exit:
   CLI
   push ds
 
@@ -99,4 +129,4 @@ MAIN PROC FAR
 
 MAIN ENDP
 CODE ENDS
-END MAIN
+END MAIN 

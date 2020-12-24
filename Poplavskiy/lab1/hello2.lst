@@ -1,0 +1,122 @@
+Microsoft (R) Macro Assembler Version 5.10                  10/1/20 11:20:11
+                                                             Page     1-1
+
+
+				; HELLO2 - “ç¥¡­ ï ¯à®£à ¬¬  N2  « ¡.à ¡.#1 ¯® 
+				¤¨áæ¨¯«¨­¥ "€àå¨â¥ªâãà  ª®¬¯ìîâ¥à "
+				;          à®£à ¬¬  ¨á¯®«ì§ã¥â ¯à®æ¥¤ãàã ¤«ï ¯
+				¥ç â¨ áâà®ª¨
+				;
+				;      ’…Š‘’  Žƒ€ŒŒ›
+				
+ = 0024				EOFLine  EQU  '$'         ; Ž¯à¥¤¥«¥­¨¥ á¨¬¢®«ì
+				­®© ª®­áâ ­âë
+				                          ;     "Š®­¥æ áâà®ª¨"
+				
+				; ‘â¥ª  ¯à®£à ¬¬ë
+				
+ 0000				AStack    SEGMENT  STACK
+ 0000  000C[			          DW 12 DUP(?)    ; Žâ¢®¤¨âáï 12 á«®¢ ¯
+				 ¬ïâ¨
+	   ????			
+			 ]	
+				
+ 0018				AStack    ENDS
+				
+				; „ ­­ë¥ ¯à®£à ¬¬ë
+				
+ 0000				DATA      SEGMENT
+				
+				;  „¨à¥ªâ¨¢ë ®¯¨á ­¨ï ¤ ­­ëå
+				
+ 0000  48 65 6C 6C 6F 20	HELLO     DB 'Hello Worlds!', 0AH, 0DH,EOFLine
+       57 6F 72 6C 64 73	
+       21 0A 0D 24		
+ 0010  53 74 75 64 65 6E	GREETING  DB 'Student from 4350 - $'
+       74 20 66 72 6F 6D	
+       20 34 33 35 30 20	
+       2D 20 24			
+ 0025				DATA      ENDS
+				
+				; Š®¤ ¯à®£à ¬¬ë
+				
+ 0000				CODE      SEGMENT
+				          ASSUME CS:Code ;DS:DATA SS:AStack
+				; à®æ¥¤ãà  ¯¥ç â¨ áâà®ª¨
+ 0000				WriteMsg  PROC  NEAR
+ 0000  B4 09			          mov   AH,9
+ 0002  CD 21			          int   21h  ; ‚ë§®¢ äã­ªæ¨¨ DOS ¯® ¯à¥
+				àë¢ ­¨î
+ 0004  C3			          ret
+ 0005				WriteMsg  ENDP
+				
+				; ƒ®«®¢­ ï ¯à®æ¥¤ãà 
+ 0005				Main      PROC  FAR
+ 0005  1E			          push  DS       ;\  ‘®åà ­¥­¨¥  ¤à¥á  
+				­ ç «  PSP ¢ áâ¥ª¥
+ 0006  2B C0			          sub   AX,AX    ; > ¤«ï ¯®á«¥¤ãîé¥£® ¢
+				®ááâ ­®¢«¥­¨ï ¯®
+Microsoft (R) Macro Assembler Version 5.10                  10/1/20 11:20:11
+                                                             Page     1-2
+
+
+ 0008  50			          push  AX       ;/  ª®¬ ­¤¥ ret, § ¢¥à
+				è îé¥© ¯à®æ¥¤ãàã.
+ 0009  B8 ---- R		          mov   AX,DATA             ; ‡ £àã§ª  
+				á¥£¬¥­â­®£®
+ 000C  8E D8			          mov   DS,AX               ; à¥£¨áâà  
+				¤ ­­ëå.
+ 000E  BA 0000 R		          mov   DX, OFFSET HELLO    ; ‚ë¢®¤ ­  
+				íªà ­ ¯¥à¢®©
+ 0011  E8 0000 R		          call  WriteMsg            ; áâà®ª¨ ¯à
+				¨¢¥âáâ¢¨ï.
+ 0014  BA 0010 R		          mov   DX, OFFSET GREETING ; ‚ë¢®¤ ­  
+				íªà ­ ¢â®à®©
+ 0017  E8 0000 R		          call  WriteMsg            ; áâà®ª¨ ¯à
+				¨¢¥âáâ¢¨ï.
+ 001A  CB			          ret                       ; ‚ëå®¤ ¢ D
+				OS ¯® ª®¬ ­¤¥,
+				                                    ; ­ å®¤ïé¥©
+				áï ¢ 1-®¬ á«®¢¥ PSP.
+ 001B				Main      ENDP
+ 001B				CODE      ENDS
+				          END Main
+Microsoft (R) Macro Assembler Version 5.10                  10/1/20 11:20:11
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0018	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	001B	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0025	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+EOFLINE  . . . . . . . . . . . .  	NUMBER	0024	
+
+GREETING . . . . . . . . . . . .  	L BYTE	0010	DATA
+
+HELLO  . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0005	CODE	Length = 0016
+
+WRITEMSG . . . . . . . . . . . .  	N PROC	0000	CODE	Length = 0005
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  hello2		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+     51 Source  Lines
+     51 Total   Lines
+     13 Symbols
+
+  48002 + 461305 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

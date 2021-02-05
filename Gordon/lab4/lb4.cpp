@@ -1,20 +1,5 @@
 #include <iostream>
-#include <conio.h>
 #include <fstream>
-
-void write(char* str)
-{
-    unsigned char ch;
-    int i = 0;
-    ch = getch();
-    while(ch != 13 && i < 80)
-    {
-        std::cout << ch;
-        str[i] = ch;
-        i++;
-        ch = getch();
-    }
-}
 
 char* foo(char* src) 
 {
@@ -71,7 +56,8 @@ int main()
     std::cout << "Author: Gordon Dmitry 9383\n";
     std::cout << "Var. 3: only russian and latin letters\n";
     char source[80 + 1] = {'\0'};
-    write(source);
+    //write(source);
+    std::cin.getline(source, 80 + 1);
     char* res = foo(source);
     std::cout << '\n';
     std::cout << "Result: " << res;
@@ -80,6 +66,7 @@ int main()
     out << res;
     out.close();
     delete[] res;
-    getch();
+    int a;
+    std::cin >> a;
     return 0;
 } 

@@ -15,11 +15,13 @@ char* foo(char* src)
             "cmp al, 0\n"       // сравниваем с 0 терминалом
             "je exit\n"         // если это он, то выходим
 
-            "inc rsi\n"         // след символ
+            "cmp al, 122\n"
+            "jb latin\n"
+            "cmp al, 239\n"
+            "jb russian\n"
+            "inc rsi\n"
+            "jmp char_loop\n"         
 
-        "handle_char:\n"        // откидываем лишние символы
-            "cmp al, 65\n"      // если код символа меньше 'a' (латинской),
-            "jb char_loop\n"    // то пропускаем символ
         "latin:\n"
             "cmp al, 122\n"
             "jg russian\n"    // больше 'z' => может русский символ
@@ -41,7 +43,7 @@ char* foo(char* src)
         "write_char:\n"
             "mov [rdi], al\n"
             "inc rdi\n"
-
+            "inc rsi\n"
             "jmp char_loop\n"
 
         "exit:\n"

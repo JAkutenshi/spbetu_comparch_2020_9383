@@ -1,0 +1,222 @@
+Microsoft (R) Macro Assembler Version 5.10                  2/5/21 17:57:05
+
+                                                             Page     1-1
+
+
+ = 0024				EOFLine  EQU  '$'         ; Определен�
+				�е символьной константы
+ = 0002				a  EQU 2
+ = 0001				B  EQU 1
+ = 0003				I  EQU 3
+ = 0000				K  EQU 0                         ;     "Кон�
+				�ц строки"
+				
+				
+				; Стек  программы
+				
+ 0000				AStack    SEGMENT  STACK
+ 0000  000C[			          DW 12 DUP(?)    ; Отводится 
+				12 слов памяти
+	   ????			
+			 ]	
+				
+ 0018				AStack    ENDS
+				
+				; Данные программы
+ 0000				DATA      SEGMENT
+				
+				;  Директивы описания данн
+				ых
+				
+ 0000  0000			F1 DW 0
+ 0002  0000			F2 DW 0
+ 0004  0000			F3 DW 0
+ 0006				DATA      ENDS
+				
+				; Код программы
+				
+ 0000				CODE      SEGMENT
+				          ASSUME CS:CODE, DS:DATA, SS:AStack
+				
+				; Головная процедура
+ 0000				Main      PROC  FAR
+ 0000  1E			          push  DS       ;\  Сохранени
+				е адреса начала PSP в стеке
+ 0001  2B C0			          sub   AX,AX    ; > для после�
+				�ующего восстановления по
+ 0003  50			          push  AX       ;/команде ret, 
+				завершающей процедуру  
+				          
+				          ;записываем условие 
+				для F1 
+				          
+ 0004  B8 0002			          MOV AX,a       ; Заносим зн�
+				�чение а
+ 0007  2D 0001			          SUB AX,b       ; Вычитаем и�
+				� а значение b
+ 000A  3D 0000			          cmp ax,0       ; Сравниваем
+				 полученное а с 0
+ 000D  7F 16			          Jg Metka1      ; Переход к М
+Microsoft (R) Macro Assembler Version 5.10                  2/5/21 17:57:05
+
+                                                             Page     1-2
+
+
+				1, если а>0
+ 000F  B8 0003			          MOV AX,I       ; Заносим зн�
+				�чение i 
+ 0012  D1 E0			          SHL AX,1       ; Сдвиг на 1б 
+				(умножаем на 2)
+ 0014  BB 0003					  MOV BX,I
+ 0017  03 C3			          ADD AX,BX       ; 2*i + i = 3i
+				          ;Mov BX,4       ; 
+ 0019  05 0004			          ADD AX,4      ; Сложение (3*i
+				 + 4)
+ 001C  A3 0000 R		          MOV F1,AX      ; Присваивае
+				м F1 значение Ах   
+ 001F  39 06 0000 R		          CMP F1,AX    
+ 0023  74 0E			          JE Fun2  
+ 0025				   Metka1:               ;   
+ 0025  B8 0003			          mov AX,I       ;
+ 0028  D1 E0			          SHL AX,1       ; 2*i
+ 002A  BB 000F			          MOV BX,15
+ 002D  2B D8			          SUB BX,AX      ; 15 - 2*i
+ 002F  89 1E 0000 R		          MOV F1,BX      ; Присваивае
+				м F1 значение Bх   
+				          
+				          
+				
+				          ; записываем условие
+				 для F2 
+ 0033				          Fun2:
+ 0033  7F 16			          JG Metka2      ; Переход к М
+				1, если а>0
+ 0035  B8 0003			          mov AX,I       ; Заносим зн�
+				�чение i 
+ 0038  D1 E0			          SHL AX,1       ; Сдвиг на 1б 
+				(умножаем на 2)
+ 003A  BB 0003					  MOV BX,I
+ 003D  03 C3			          ADD AX,BX       ; 2*i + i = 3*i
+				          ;MOV BX,6
+ 003F  05 0006			          ADD AX,6      ; 3*(i + 2) = 3*i + 6 
+ 0042  A3 0002 R		          MOV F2,Ax      ; Присваивае
+				м F2 значение Ах 
+ 0045  39 06 0002 R		          CMP F2,Ax      ; Сравнение �
+				�езультата
+ 0049  74 17			          JE  Fun3       ; Переход, ес
+				ли равно 
+ 004B				  Metka2:                ;
+ 004B  B8 0003			          MOV AX,I       ;
+ 004E  D1 E0			          SHL AX,1       ; 2*i
+ 0050  D1 E0					  SHL AX,1       ; 2*i
+ 0052  BB 0003					  MOV BX,I
+ 0055  03 C3			          ADD AX,BX       ; 5*i
+ 0057  03 C3					  ADD AX,BX       ; 6*i
+ 0059  BB 0004					  MOV BX,4
+ 005C  2B D8			          SUB BX,AX      ; 4 - 6*i 
+ 005E  89 1E 0002 R		          MOV F2,BX      ; Присваивае
+				м F2 значение Ах 
+Microsoft (R) Macro Assembler Version 5.10                  2/5/21 17:57:05
+
+                                                             Page     1-3
+
+
+				          
+				          ; записываем условие
+				 для F3 
+				           
+ 0062				          Fun3: 
+ 0062  B8 0000			          MOV AX,K       ;
+ 0065  3D 0000			          CMP AX,0       ;
+ 0068  75 1C			          JNE Metka3     ; Если к/=0, то
+				 переход
+ 006A  A1 0000 R		          mov AX,F1      ;
+ 006D  8B 1E 0002 R		          mov BX,F2      ; 
+ 0071  03 D8			          ADD BX,AX      ; i1 + i2
+ 0073  83 FB 00			          CMP BX,0       ; 
+ 0076  7F 09			          JG Metka4      ;
+									
+					 ; i1 + i2 <= 0
+ 0078  83 F3 FF			          xor BX, 0FFFFh ; инверсия в�
+				�ех битов
+ 007B  43					  inc BX         ; добавл
+				яем 1               
+ 007C  89 1E 0004 R		          mov F3,BX      ;
+ 0080  CB					  RET            ;
+ 0081				   Metka4:               ; i1 + i2 > 0
+ 0081  89 1E 0004 R		          mov F3,BX		 ; ответ �
+				�аписываем в F3
+ 0085  CB					  RET            ;
+ 0086				   Metka3:               ;
+ 0086  A1 0000 R		          MOV AX,F1      ;
+ 0089  8B 1E 0002 R		          MOV BX,F2      ; 
+ 008D  2B D8			          SUB BX,AX      ; 
+ 008F  83 FB 00			          CMP BX,0       ;
+ 0092  7F 04					  JG Metka5      ;
+				          				 ; i2 <
+				= i1
+ 0094  A3 0004 R				  MOV F3,AX 
+ 0097  CB			          ret 
+ 0098				Metka5:                  ;
+ 0098  8B 1E 0002 R		          MOV BX,F2      ; i2 > i1
+ 009C  89 1E 0004 R		          MOV F3,BX      ;
+ 00A0  CB			          ret            ; Выход в DOS п
+				о команде,
+				                         ; находящейс
+				я в 1-ом слове PSP.
+ 00A1				CODE      ENDS
+ 0000				Main      ENDP
+				          END main
+Microsoft (R) Macro Assembler Version 5.10                  2/5/21 17:57:05
+
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+ASTACK . . . . . . . . . . . . .  	0018	PARA	STACK	
+CODE . . . . . . . . . . . . . .  	00A1	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0006	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A  . . . . . . . . . . . . . . .  	NUMBER	0002	
+
+B  . . . . . . . . . . . . . . .  	NUMBER	0001	
+
+EOFLINE  . . . . . . . . . . . .  	NUMBER	0024	
+
+F1 . . . . . . . . . . . . . . .  	L WORD	0000	DATA
+F2 . . . . . . . . . . . . . . .  	L WORD	0002	DATA
+F3 . . . . . . . . . . . . . . .  	L WORD	0004	DATA
+FUN2 . . . . . . . . . . . . . .  	L NEAR	0033	CODE
+FUN3 . . . . . . . . . . . . . .  	L NEAR	0062	CODE
+
+I  . . . . . . . . . . . . . . .  	NUMBER	0003	
+
+K  . . . . . . . . . . . . . . .  	NUMBER	0000	
+
+MAIN . . . . . . . . . . . . . .  	F PROC	0000	CODE	Length = 0000
+METKA1 . . . . . . . . . . . . .  	L NEAR	0025	CODE
+METKA2 . . . . . . . . . . . . .  	L NEAR	004B	CODE
+METKA3 . . . . . . . . . . . . .  	L NEAR	0086	CODE
+METKA4 . . . . . . . . . . . . .  	L NEAR	0081	CODE
+METKA5 . . . . . . . . . . . . .  	L NEAR	0098	CODE
+
+@CPU . . . . . . . . . . . . . .  	TEXT  0101h		
+@FILENAME  . . . . . . . . . . .  	TEXT  LR3		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+
+
+    117 Source  Lines
+    117 Total   Lines
+     24 Symbols
+
+  48072 + 455091 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

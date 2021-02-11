@@ -7,6 +7,7 @@ AStack  ENDS
 DATA    SEGMENT
     KEEP_CS DW 0    ; для хранения сегмента вектора прерывания
     KEEP_IP DW 0    ; и смещения вектора прерывания
+	string DB 'Lr5 ','$'
 DATA    ENDS
 
 CODE    SEGMENT
@@ -17,10 +18,22 @@ SUBR_INT PROC FAR
 	PUSH DX
 	PUSH CX
 	
-    MOV CX, 0088H
-    MOV DX, 00FFH ; 0088H и 00FFH - 8 сек 
-    MOV AH, 86H ;delay func
-    INT 15H ;
+	mov AH,09h				;(3)
+	mov DX,offset string	;(4)
+	int 21h					;(5)
+	mov CX,1		;(1)Число шагов в демо-цикле
+cycle:	push CX			;(2)Сохраним этот счетчик в стеке
+	;Организуем программную задержку
+	mov CX,50		;(6)Счетчик внешнего цикла
+outer:	push CX			;(7)Сохраним его в стеке
+	mov CX,65535		;(8)Счетчик внутреннего цикла
+inner:	loop inner		;(9)Повторим команду loop 65535 раз
+	pop CX			;(10)Восстановим внешний счетчик
+	loop outer		;(11)Повторим все это 100 раз
+	pop CX			;(12)Восстановим счетчик демо-цикла
+	loop cycle		;(13)Повторим демо-цикл CX=10 раз
+	
+    
 	
     MOV AL, 20H
     OUT 20H,AL
@@ -51,8 +64,14 @@ MAIN PROC FAR
     INT 21H ; меняем прерывание
     POP DS
     
-    INT 1CH
-    
+	print:
+	mov ah, 01h
+	int 21h
+	cmp al, 1bh ;esc
+	jne print
+
+
+	
     CLI
     PUSH DS
     MOV DX, KEEP_IP

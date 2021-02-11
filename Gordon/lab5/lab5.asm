@@ -18,21 +18,16 @@ SUBR_INT PROC FAR
 	PUSH DX
 	PUSH CX
 	
-	mov AH,09h				;(3)
-	mov DX,offset string	;(4)
-	int 21h					;(5)
 	mov CX,1		;(1)Число шагов в демо-цикле
 cycle:	push CX			;(2)Сохраним этот счетчик в стеке
-	;Организуем программную задержку
-	mov CX,50		;(6)Счетчик внешнего цикла
+	mov CX,10			;(6)Счетчик внешнего цикла
 outer:	push CX			;(7)Сохраним его в стеке
-	mov CX,65535		;(8)Счетчик внутреннего цикла
+	mov CX,15000		;(8)Счетчик внутреннего цикла
 inner:	loop inner		;(9)Повторим команду loop 65535 раз
-	pop CX			;(10)Восстановим внешний счетчик
-	loop outer		;(11)Повторим все это 100 раз
-	pop CX			;(12)Восстановим счетчик демо-цикла
-	loop cycle		;(13)Повторим демо-цикл CX=10 раз
-	
+	pop CX				;(10)Восстановим внешний счетчик
+	loop outer			;(11)Повторим все это 100 раз
+	pop CX				;(12)Восстановим счетчик демо-цикла
+	loop cycle			;(13)Повторим демо-цикл CX=10 раз
     
 	
     MOV AL, 20H
@@ -65,10 +60,10 @@ MAIN PROC FAR
     POP DS
     
 	print:
-	mov ah, 01h
-	int 21h
-	cmp al, 1bh ;esc
-	jne print
+	mov AH,09h				
+	mov DX,offset string	
+	int 21h	
+	jmp print
 
 
 	

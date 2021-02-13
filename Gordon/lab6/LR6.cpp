@@ -52,9 +52,10 @@ void writeRangesAmount(int& NInt, const int Xmin, const int Xmax)
 
 void writeRangesBorders(const int NInt, const int Xmin, const int Xmax, int* LGrInt)
 {
-    int i = 1;
+    //LGrInt[0] = Xmin;
+    int i = 0;
     cout << "Введите " << NInt - 1 << " нижних границ\n";
-    while (i < NInt)
+    while (i < NInt - 1)
     {
         cin >> LGrInt[i];
         if (LGrInt[i] > Xmax or LGrInt[i] < Xmin)
@@ -62,9 +63,9 @@ void writeRangesBorders(const int NInt, const int Xmin, const int Xmax, int* LGr
             cout << "Введенный нижний предел не попадает в интервал" << "[" << Xmin << "," << Xmax << "]" << "\n";
             cout << "Введите значение еще раз:\n";
         }
-        else if (i > 0 and LGrInt[i] < LGrInt[i - 1])
+        else if (i > 0 and LGrInt[i] <= LGrInt[i - 1])
         {
-            cout << "Нижняя граница " << LGrInt[i - 1] << " больше, чем предыдущая - " << LGrInt[i] << '\n';
+            cout << "Нижняя граница " << LGrInt[i - 1] << " больше или равна предыдущей - " << LGrInt[i] << '\n';
             cout << "Введите значение заново:\n";
         }
         else
@@ -72,8 +73,7 @@ void writeRangesBorders(const int NInt, const int Xmin, const int Xmax, int* LGr
             i++;
         }
     }
-    LGrInt[NInt] = Xmax;
-    LGrInt[0] = Xmin;
+    //LGrInt[NInt] = Xmax;
 }
 
 int main()
@@ -87,7 +87,7 @@ int main()
     cin >> Xmax;
     writeRangesAmount(NInt, Xmin, Xmax);
     int* LGrInt;
-    LGrInt = new int[NInt + 1];
+    LGrInt = new int[NInt - 1];
     writeRangesBorders(NInt, Xmin, Xmax, LGrInt);
     int* arr = new int[NumRanDat];
     srand((time(0)));
@@ -108,13 +108,30 @@ int main()
         cout << arr[i] << " ";
         file << arr[i] << " ";
     }
-    func(NumRanDat, arr, LGrInt, ans, NInt);
+    qsort(arr, NumRanDat, sizeof *arr, [](const void* arr, const void* b)
+    {
+            int arg1 = *static_cast<const int*>(arr);
+            int arg2 = *static_cast<const int*>(b);
+
+            if (arg1 < arg2) return -1;
+            if (arg1 > arg2) return 1;
+            return 0;
+    });
+    //printArr(arr, NumRanDat);
+    func(NumRanDat, arr, LGrInt, ans, NInt - 1);
     cout << '\n';
     file << '\n';
-    for (int i = 0; i < NInt; ++i)
+    cout << "№" << "|" << "интервал" << "|" << "количество" << '\n';
+    file << "№" << "|" << "интервал" << "|" << "количество" << '\n';
+    for (int i = 0; i < NInt; i++) 
     {
-        cout << i << "   |  " << "[" << LGrInt[i] << "," << LGrInt[i + 1] << "]" << "  |  " << ans[i] << '\n';
-        file << i << "   |  " << "[" << LGrInt[i] << "," << LGrInt[i + 1] << "]" << "  |  " << ans[i] << '\n';
+        int n1, n2;
+        char l_border = '[';
+        char r_border = ')';
+        if (i == NInt - 1) r_border = ']';
+        n1 = i != 0 ? LGrInt[i - 1] : Xmin;
+        n2 = i != NInt - 1 ? LGrInt[i] : Xmax;
+        file << i + 1 << " | " << l_border << n1 << ", " << n2 << r_border << " |  " << ans[i] << "\n";
+        cout << i + 1 << " | " << l_border << n1 << ", " << n2 << r_border << " |  " << ans[i] << "\n";
     }
-    
 }
